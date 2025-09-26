@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env
+.env/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Flask
+instance/
+.webassets-cache
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
+
+# OneDrive
+~$*
