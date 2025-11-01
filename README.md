@@ -27,36 +27,47 @@ The system is capable of logging all entrants and maintaining a record of employ
 - Git (optional, for cloning or pushing to GitHub)
 - Recommended: an internet connection to install dependencies
 
-## Quick Start (Windows PowerShell)
+# Project Setup
 
-1. Open PowerShell and change to the project folder:
-
-```powershell
-cd "C:\path\to\the\project\"
+## 1. Clone the repo and navigate to the project folder
+```bash
+git clone <repo-url>
+cd <project-folder>
 ```
 
-2. Create and activate a virtual environment:
-
-```powershell
+## 2. Setup Python backend
+```bash
 python -m venv venv
-.\\venv\\Scripts\\Activate.ps1
 ```
 
-3. Upgrade pip and install dependencies:
-
-```powershell
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+### On Windows:
+```bash
+.\venv\Scripts\Activate.ps1
+```
+### On macOS/Linux:
+```bash
+source venv/bin/activate
 ```
 
-4. Set the Flask app environment variable and run the server:
+pip install -r server/requirements.txt
+uv run -m uvicorn server.app:app --reload
 
-```powershell
-$env:FLASK_APP = 'app.py'
-flask run
+## 3. Setup React frontend
+```bash
+cd client
+npm install
+npm start
 ```
 
-5. Open http://127.0.0.1:5000 in your browser to view the application.
+## 4. Access the app
+```bash
+React frontend: http://localhost:3000
+Flask backend: http://127.0.0.1:8000/api/hello
+```
 
-Notes:
-- If PowerShell blocks the virtual environment activation script, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` before activating.
+Optional: Run both backend & frontend together
+From the project root:
+```bash
+npm install concurrently --save-dev
+npm start
+```
