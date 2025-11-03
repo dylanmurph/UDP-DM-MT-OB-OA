@@ -1,23 +1,36 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Home from "./components/Home";
+import api from "./api"; // make sure this has withCredentials: true
 
 function App() {
-  const [message, setMessage] = useState("Loading...");
+  const [user, setUser] = useState(null); // track logged-in user
 
+  // Check if user is already logged in via cookie
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/hello")
-      .then(res => setMessage(res.data.message))
-      .catch(err => {
-        console.error(err);
-        setMessage("Error connecting to Flask backend");
-      });
+    api.get("/me")
+      .then(res => {
+        if (res.data.username) {
+          setUser(res.data.username);
+        } else {
+          setUser(null);
+        }
+      })
+      .catch(() => setUser(null));
   }, []);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "4rem" }}>
-      <h1>React + Flask App</h1>
-      <p>{message}</p>
+    <div style={{ maxWidth: "500px", margin: "2rem auto", textAlign: "center" }}>
+      {!user ? (
+        <>
+          <h1>React + Flask App</h1>
+          <Register setUser={setUser} />
+          <Login setUser={setUser} />
+        </>
+      ) : (
+        <Home user={user} setUser={setUser} />
+      )}
     </div>
   );
 }
