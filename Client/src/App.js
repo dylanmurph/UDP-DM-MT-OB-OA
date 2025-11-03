@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
-import api from "./api"; // make sure this has withCredentials: true
+import api from "./api";
 
 function App() {
-  const [user, setUser] = useState(null); // track logged-in user
+  const [user, setUser] = useState(null);
 
-  // Check if user is already logged in via cookie
   useEffect(() => {
     api.get("/me")
       .then(res => {

@@ -18,7 +18,7 @@ CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
-db.init_app(app)  # initialize the shared db with this app
+db.init_app(app)
 
 with app.app_context():
     db.create_all()
