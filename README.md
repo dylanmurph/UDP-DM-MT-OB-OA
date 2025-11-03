@@ -42,7 +42,7 @@ python -m venv venv
 
 ### On Windows:
 ```bash
-.\venv\Scripts\Activate.ps1
+venv\Scripts\Activate
 ```
 ### On macOS/Linux:
 ```bash
@@ -50,24 +50,28 @@ source venv/bin/activate
 ```
 
 pip install -r server/requirements.txt
-uv run -m uvicorn server.app:app --reload
 
 ## 3. Setup React frontend
 ```bash
+npm install (in root)
 cd client
 npm install
-npm start
 ```
 
-## 4. Access the app
+## 4. Setup Database
 ```bash
-React frontend: http://localhost:3000
-Flask backend: http://127.0.0.1:8000/api/hello
+create database on xampp
 ```
 
-Optional: Run both backend & frontend together
-From the project root:
+## 5. Setup env file (in server)
+```bash
+FLASK_SECRET_KEY=supersecretdevkey123
+
+DATABASE_URL=mysql+pymysql://root:password@localhost/dbname
+```
+
+## 6. Access the app
 ```bash
 npm install concurrently --save-dev
-npm start
+npm start (at root)
 ```
