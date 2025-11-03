@@ -5,30 +5,34 @@ import Home from "./components/Home";
 import api from "./api";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [guest, setGuest] = useState(null);
 
   useEffect(() => {
     api.get("/me")
       .then(res => {
-        if (res.data.username) {
-          setUser(res.data.username);
+        if (res.data && res.data.name) {
+          setGuest({
+            name: res.data.name,
+            email: res.data.email,
+            guest_id: res.data.guest_id
+          });
         } else {
-          setUser(null);
+          setGuest(null);
         }
       })
-      .catch(() => setUser(null));
+      .catch(() => setGuest(null));
   }, []);
 
   return (
     <div style={{ maxWidth: "500px", margin: "2rem auto", textAlign: "center" }}>
-      {!user ? (
+      {!guest ? (
         <>
-          <h1>React + Flask App</h1>
-          <Register setUser={setUser} />
-          <Login setUser={setUser} />
+          <h1>BnB Smart Access</h1>
+          <Register setGuest={setGuest} />
+          <Login setGuest={setGuest} />
         </>
       ) : (
-        <Home user={user} setUser={setUser} />
+        <Home guest={guest} setGuest={setGuest} />
       )}
     </div>
   );

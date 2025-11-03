@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import api from "../api";
 
-function Login({ setUser }) {
-  const [username, setUsername] = useState("");
+function Login({ setGuest }) {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/login", { username, password });
+      const res = await api.post("/login", { email, password });
       setMessage(res.data.message);
-      setUser(username);
+      setGuest({
+        guest_id: res.data.guest_id,
+        name: res.data.name,
+        email: res.data.email
+      });
     } catch (err) {
       setMessage(err.response?.data?.message || "Error logging in");
     }
@@ -20,8 +24,20 @@ function Login({ setUser }) {
   return (
     <form onSubmit={handleLogin}>
       <h2>Login</h2>
-      <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" required />
-      <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" required />
+      <input
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+        type="email"
+        required
+      />
+      <input
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        type="password"
+        required
+      />
       <button type="submit">Login</button>
       <p>{message}</p>
     </form>
