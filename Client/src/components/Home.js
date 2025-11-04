@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
 
-function Home({ user, setUser }) {
+function Home({ guest, setGuest }) {
   const [message, setMessage] = useState("Loading...");
 
   useEffect(() => {
@@ -13,7 +13,7 @@ function Home({ user, setUser }) {
   const handleLogout = async () => {
     try {
       await api.post("/logout");
-      setUser(null);
+      setGuest(null);
     } catch {
       alert("Error logging out");
     }
@@ -21,7 +21,7 @@ function Home({ user, setUser }) {
 
   return (
     <div>
-      <h2>Welcome, {user}!</h2>
+      <h2>Welcome, {guest?.name}!</h2>
       <p>{message}</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
