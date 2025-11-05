@@ -1,40 +1,43 @@
-import React, { useState, useEffect } from "react";
-import Login from "./components/Login";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Landing from "./components/Landing";
 import Register from "./components/Register";
+import Login from "./components/Login";
 import Home from "./components/Home";
-import api from "./api";
 
 function App() {
-  const [guest, setGuest] = useState(null);
-
-  useEffect(() => {
-    api.get("/me")
-      .then(res => {
-        if (res.data && res.data.name) {
-          setGuest({
-            name: res.data.name,
-            email: res.data.email,
-            guest_id: res.data.guest_id
-          });
-        } else {
-          setGuest(null);
-        }
-      })
-      .catch(() => setGuest(null));
-  }, []);
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    return { token };
+  });
 
   return (
-    <div style={{ maxWidth: "500px", margin: "2rem auto", textAlign: "center" }}>
-      {!guest ? (
-        <>
-          <h1>BnB Smart Access</h1>
-          <Register setGuest={setGuest} />
-          <Login setGuest={setGuest} />
-        </>
-      ) : (
-        <Home guest={guest} setGuest={setGuest} />
-      )}
-    </div>
+    <Router>
+      <div style={{ maxWidth: "500px", margin: "2rem auto", textAlign: "center" }}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+
+          <Route
+            path="/register"
+            element={!user ? <Register setUser={setUser} /> : <Navigate to="/home" replace />}
+          />
+
+          <Route
+            path="/login"
+            element={!user ? <Login setUser={setUser} /> : <Navigate to="/home" replace />}
+          />
+
+          <Route
+            path="/home"
+            element={user ? <Home user={user} setUser={setUser} /> : <Navigate to="/" replace />}
+          />
+
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
