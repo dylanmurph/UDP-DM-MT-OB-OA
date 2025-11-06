@@ -1,29 +1,24 @@
-import React, { useEffect, useState } from "react";
-import api from "../api";
+import React from "react";
 
-function Home({ guest, setGuest }) {
-  const [message, setMessage] = useState("Loading...");
-
-  useEffect(() => {
-    api.get("/hello")
-      .then(res => setMessage(res.data.message))
-      .catch(() => setMessage("Error connecting to backend"));
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await api.post("/logout");
-      setGuest(null);
-    } catch {
-      alert("Error logging out");
-    }
+function Home({ user, setUser }) {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
   };
 
   return (
     <div>
-      <h2>Welcome, {guest?.name}!</h2>
-      <p>{message}</p>
-      <button onClick={handleLogout}>Logout</button>
+      <h2>{user?.name ? `Welcome, ${user.name}!` : "Welcome!"}</h2>
+      {user ? (
+        <>
+          <p>You are a {user.role}</p>
+          <button onClick={handleLogout}>Logout</button>
+        </>
+      ) : (
+        <>
+          <p>Please log in or register</p>
+        </>
+      )}
     </div>
   );
 }

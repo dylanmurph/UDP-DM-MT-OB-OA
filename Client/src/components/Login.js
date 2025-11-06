@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../api";
 
-function Login({ setGuest }) {
+function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -10,13 +10,21 @@ function Login({ setGuest }) {
     e.preventDefault();
     try {
       const res = await api.post("/login", { email, password });
-      setMessage(res.data.message);
-      setGuest({
-        guest_id: res.data.guest_id,
+
+      const token = res.data.access_token;
+      localStorage.setItem("token", token);
+
+      setUser({
+        user_id: res.data.user_id,
         name: res.data.name,
-        email: res.data.email
+        email: res.data.email,
+        role: res.data.role,
+        token: token
       });
+
+      setMessage(res.data.message);
     } catch (err) {
+      console.error(err);
       setMessage(err.response?.data?.message || "Error logging in");
     }
   };
@@ -24,20 +32,8 @@ function Login({ setGuest }) {
   return (
     <form onSubmit={handleLogin}>
       <h2>Login</h2>
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        type="email"
-        required
-      />
-      <input
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        type="password"
-        required
-      />
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
       <button type="submit">Login</button>
       <p>{message}</p>
     </form>
