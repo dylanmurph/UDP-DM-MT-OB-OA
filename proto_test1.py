@@ -10,10 +10,12 @@ GPIO.setmode(GPIO.BCM)
 LED_RED = 22
 LED_YEL = 23
 LED_GRN = 24
+BUZZ = 18
 
 GPIO.setup(LED_RED, GPIO.OUT)
 GPIO.setup(LED_YEL, GPIO.OUT)
 GPIO.setup(LED_GRN, GPIO.OUT)
+GPIO.setup(BUZZ, GPIO.OUT)
 
 # Start in RED state
 GPIO.output(LED_RED, True)
@@ -35,11 +37,13 @@ try:
         if uid is not None:
             print("Tag detected:", uid.hex().upper())
 
-            # YELLOW for 1 second
+            # YELLOW for 2 seconds
             GPIO.output(LED_RED, False)
             GPIO.output(LED_YEL, True)
             GPIO.output(LED_GRN, False)
-            time.sleep(1)
+            GPIO.output(BUZZ, True)
+            time.sleep(2)
+            GPIO.output(BUZZ, False)
             # GREEN for 10 seconds
             GPIO.output(LED_RED, False)
             GPIO.output(LED_YEL, False)
