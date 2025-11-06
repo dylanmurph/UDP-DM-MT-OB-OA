@@ -10,7 +10,6 @@ pip3 install --break-system-packages adafruit-circuitpython-pn532
 
 python3 -m venv venv
 pip install adafruit-circuitpython-pn532 RPi.GPIO flask
-python nfc_unlock.py
 python nfc_test.py
 ctn+z
 deactivate
