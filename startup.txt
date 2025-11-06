@@ -1,0 +1,16 @@
+nfc wiki: https://www.waveshare.com/wiki/PN532_NFC_HAT#Raspberry_Pi_Examples
+
+Setting up pi for nfc:
+
+sudo raspi-config      # Interface Options → I2C → Enable → Finish → Reboot
+
+sudo apt update
+sudo apt install -y i2c-tools python3-pip
+pip3 install --break-system-packages adafruit-circuitpython-pn532
+
+python3 -m venv venv
+pip install adafruit-circuitpython-pn532 RPi.GPIO flask
+python nfc_unlock.py
+python nfc_test.py
+ctn+z
+deactivate
