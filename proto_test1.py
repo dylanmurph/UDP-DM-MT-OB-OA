@@ -39,10 +39,13 @@ try:
 
             # YELLOW for 2 seconds
             GPIO.output(LED_RED, False)
-            GPIO.output(LED_YEL, True)
             GPIO.output(LED_GRN, False)
             GPIO.output(BUZZ, True)
-            time.sleep(2)
+            for i in range(3):
+                GPIO.output(LED_YEL, True)
+                time.sleep(.3)
+                GPIO.output(LED_YEL, False)
+                time.sleep(.3)
             GPIO.output(BUZZ, False)
             # GREEN for 10 seconds
             GPIO.output(LED_RED, False)
