@@ -65,3 +65,6 @@ desktop.ini
 # OneDrive temp files (Windows)
 # ---------------------------
 ~$*
+
+# PEM file
+*.pem
