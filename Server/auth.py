@@ -1,6 +1,6 @@
 from flask import request, jsonify
-from app import app, db, bcrypt
-from models import User, BnB, Booking, Guest, GuestPhoto, Credential, AccessLog
+from .app import app, db, bcrypt
+from .models import User, BnB, Booking, Guest, GuestPhoto, Credential, AccessLog
 from flask_jwt_extended import JWTManager, create_access_token
 from datetime import datetime
 import re
