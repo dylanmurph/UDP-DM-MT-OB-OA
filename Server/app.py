@@ -2,9 +2,11 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from models import db, User
+from .models import db, User
 import os
 from dotenv import load_dotenv
+# Import auth routes (register/login/logout)
+from .auth import *
 
 load_dotenv()
 
@@ -34,9 +36,6 @@ with app.app_context():
         u.set_password("password123", bcrypt)
         db.session.add(u)
         db.session.commit()
-
-# Import auth routes (register/login/logout)
-from auth import *
 
 @app.route("/api/hello")
 def hello():
