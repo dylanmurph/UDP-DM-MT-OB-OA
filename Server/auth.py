@@ -19,7 +19,7 @@ auth_bp = Blueprint("auth", __name__)
 # UNIVERSAL REGISTER (USER OR HOST)
 # ============================================================
 
-@auth_bp.route("/api/register", methods=["POST"])
+@auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json(force=True)
     name = data.get("name")
@@ -60,7 +60,7 @@ def register():
 # LOGIN USER OR HOST
 # ============================================================
 
-@auth_bp.route("/api/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json(force=True)
     email = data.get("email", "").lower()

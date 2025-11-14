@@ -6,8 +6,10 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
+# Load environment variables from .env
 load_dotenv()
 
+# Initialize extensions
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 jwt = JWTManager()
@@ -20,14 +22,19 @@ def create_app():
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    CORS(app)
+    # Enable CORS
+    CORS( 
+        app,
+        origins=[os.getenv("REACT_APP_API_URL")],   # allow only your frontend
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # allow all common methods
+    )
 
     # Initialize extensions
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    # Register blueprints
+    # Register blueprint
     from .auth import auth_bp
     app.register_blueprint(auth_bp)
 
