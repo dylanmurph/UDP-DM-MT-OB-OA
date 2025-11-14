@@ -63,15 +63,16 @@ npm install
 create database on xampp
 ```
 
-## 5. Setup env file (in server)
+## 5. Setup env file (at root)
 ```bash
-FLASK_SECRET_KEY=supersecretdevkey123
+JWT_SECRET_KEY=supersecretdevkey123
 
 DATABASE_URL=mysql+pymysql://root:password@localhost/dbname
+
+REACT_APP_API_URL=http://34.245.185.243:8000/api
 ```
 
 ## 6. Access the app
 ```bash
-npm install concurrently --save-dev
 npm start (at root)
 ```
