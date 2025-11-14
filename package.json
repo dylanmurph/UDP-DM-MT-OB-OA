@@ -3,7 +3,7 @@
     "concurrently": "^9.2.1"
   },
   "scripts": {
-    "start": "concurrently \"npm start --prefix client\" \"python server/run.py\""
+    "start": "concurrently \"npm start --prefix client\" \"python -m Server.run\""
   },
   "dependencies": {
     "react-router-dom": "^7.9.5"
