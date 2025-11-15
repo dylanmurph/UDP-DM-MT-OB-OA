@@ -23,7 +23,11 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Enable CORS
-    CORS(app, origins=["http://localhost:3000"])
+    CORS( 
+        app,
+        origins="http://34.245.185.243:3000",
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    )
 
     # Initialize extensions
     db.init_app(app)
