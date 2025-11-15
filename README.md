@@ -72,7 +72,10 @@ DATABASE_URL=mysql+pymysql://root:password@localhost/dbname
 REACT_APP_API_URL=http://34.245.185.243:8000/api
 ```
 
-## 6. Access the app
+## 6. Set Up Tailwind
+npm install tailwindcss postcss autoprefixer
+
+## 7. Access the app
 ```bash
 npm start (at root)
 ```
