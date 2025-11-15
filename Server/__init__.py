@@ -25,7 +25,7 @@ def create_app():
     # Enable CORS
     CORS( 
         app,
-        origins="https://hostlocksd3b.online",
+        origins="https://www.hostlocksd3b.online",
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     )
 
