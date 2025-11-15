@@ -62,14 +62,21 @@ npm install
 ```bash
 create database on xampp
 ```
+## 5. Setup env files
 
-## 5. Setup env file (at root)
+### a. Setup env file in Root
+
 ```bash
 JWT_SECRET_KEY=supersecretdevkey123
 
 DATABASE_URL=mysql+pymysql://root:password@localhost/dbname
 
-REACT_APP_API_URL=http://34.245.185.243:8000/api
+REACT_APP_API_URL=http://localhost:5000
+```
+
+### b. setup env file in Client
+```bash
+REACT_APP_API_URL=http://localhost:5000
 ```
 
 ## 6. Access the app

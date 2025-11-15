@@ -23,11 +23,7 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Enable CORS
-    CORS( 
-        app,
-        origins=[os.getenv("REACT_APP_API_URL")],   # allow only your frontend
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # allow all common methods
-    )
+    CORS(app, origins=["http://localhost:3000"])
 
     # Initialize extensions
     db.init_app(app)
