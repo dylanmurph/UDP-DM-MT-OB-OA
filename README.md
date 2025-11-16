@@ -81,6 +81,7 @@ REACT_APP_API_URL=http://localhost:5000
 
 ## 6. Set Up Tailwind
 npm install tailwindcss postcss autoprefixer
+npm install lucide-react (for  the icons)
 
 ## 7. Access the app
 ```bash
