@@ -8,10 +8,14 @@ import { PubNubProvider } from 'pubnub-react';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const pubnub = new PubNub({
-  publishKey: process.env.REACT_APP_PUBNUB_PUBLISH_KEY,
-  subscribeKey: process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY,
+  publishKey: process.env.REACT_APP_PUBNUB_PUBLISH_KEY || "default_pub",
+  subscribeKey: process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY || "default_sub",
   uuid: "client-uuid"
 });
+
+if (!process.env.REACT_APP_PUBNUB_PUBLISH_KEY || !process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY) {
+  console.warn("PubNub keys not configured. Add them to your .env file.");
+}
 
 root.render(
   <React.StrictMode>
