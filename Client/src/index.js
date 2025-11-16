@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 const pubnub = new PubNub({
   publishKey: process.env.REACT_APP_PUBNUB_PUBLISH_KEY || "default_pub",
   subscribeKey: process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY || "default_sub",
-  uuid: "client-uuid"
+  userId: "web-user-" + Math.floor(Math.random() * 10000),
 });
 
 if (!process.env.REACT_APP_PUBNUB_PUBLISH_KEY || !process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY) {
