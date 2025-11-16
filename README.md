@@ -29,8 +29,9 @@ The system is capable of logging all entrants and maintaining a record of employ
 
 # Project Setup
 
-## 1. Clone the repo and navigate to the project folder
+## 1. SSH into server
 ```bash
+ssh -i /path/to/your-key.pem ubuntu@<PUBLIC_IP>
 git clone <repo-url>
 cd <project-folder>
 ```
@@ -38,48 +39,34 @@ cd <project-folder>
 ## 2. Setup Python backend
 ```bash
 python -m venv venv
-```
-
-### On Windows:
-```bash
-venv\Scripts\Activate
-```
-### On macOS/Linux:
-```bash
 source venv/bin/activate
 ```
 
-pip install -r server/requirements.txt
+pip install -r Server/requirements.txt
 
 ## 3. Setup React frontend
 ```bash
 npm install (in root)
-cd client
+cd Client
 npm install
 ```
 
-## 4. Setup Database
+## 4. Setup Nginx
 ```bash
-create database on xampp
-```
-## 5. Setup env files
-
-### a. Setup env file in Root
-
-```bash
-JWT_SECRET_KEY=supersecretdevkey123
-
-DATABASE_URL=mysql+pymysql://root:password@localhost/dbname
-
-REACT_APP_API_URL=http://localhost:5000
+sudo cp nginx/hostlocksd3b.online /etc/nginx/sites-available/
+sudo ln -s /etc/nginx/sites-available/hostlocksd3b.online /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+sudo certbot --nginx -d hostlocksd3b.online -d www.hostlocksd3b.online
 ```
 
-### b. setup env file in Client
+## 5. Build & Deploy React frontend (in Client)
 ```bash
-REACT_APP_API_URL=http://localhost:5000
+npm run build
+sudo cp -r build/* /var/www/html/
 ```
 
-## 6. Access the app
+## 6. Deploy Flask backend (in Root)
 ```bash
-npm start (at root)
+python -m Server.run
 ```
