@@ -60,13 +60,13 @@ sudo systemctl reload nginx
 sudo certbot --nginx -d hostlocksd3b.online -d www.hostlocksd3b.online
 ```
 
-## 5. Build & Deploy React frontend
+## 5. Build & Deploy React frontend (in Client)
 ```bash
 npm run build
-sudo cp -r client/build/* /var/www/html/
+sudo cp -r build/* /var/www/html/
 ```
 
-## 6. Deploy Flask backend
+## 6. Deploy Flask backend (in Root)
 ```bash
 python -m Server.run
 ```
