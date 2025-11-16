@@ -20,6 +20,12 @@ import HostLogs from "./components/Host/HostLogs";
 import HostSettings from "./components/Host/HostSettings";
 
 function App() {
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    return { token };
+  });
+
   return (
     <Router>
       <div className="max-w-md mx-auto p-4">
