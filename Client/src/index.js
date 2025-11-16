@@ -3,11 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import PubNub from 'pubnub';
+import { PubNubProvider } from 'pubnub-react';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const pubnub = new PubNub({
+  publishKey: process.env.REACT_APP_PUBNUB_PUBLISH_KEY,
+  subscribeKey: process.env.REACT_APP_PUBNUB_SUBSCRIBE_KEY,
+  uuid: "client-uuid"
+});
+
 root.render(
   <React.StrictMode>
-    <App />
+    <PubNubProvider client={pubnub}>
+      <App />
+    </PubNubProvider>
   </React.StrictMode>
 );
 

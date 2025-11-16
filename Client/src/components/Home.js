@@ -1,9 +1,19 @@
 import React from "react";
+import { usePubNub } from "pubnub-react";
 
 function Home({ user, setUser }) {
+  const pubnub = usePubNub();
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
+  };
+
+  const publishMessage = (message) => {
+    pubnub.publish({
+      channel: "your_channel",
+      message: message,
+    });
   };
 
   return (
@@ -19,6 +29,9 @@ function Home({ user, setUser }) {
           <p>Please log in or register</p>
         </>
       )}
+      <button onClick={() => publishMessage("Hello, World!")}>
+        Publish a message
+      </button>
     </div>
   );
 }
