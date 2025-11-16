@@ -66,7 +66,11 @@ npm run build
 sudo cp -r build/* /var/www/html/
 ```
 
-## 6. Deploy Flask backend (in Root)
+## 6. Set Up Tailwind
+npm install tailwindcss postcss autoprefixer
+npm install lucide-react (for  the icons)
+
+## 7. Access the app
 ```bash
 python -m Server.run
 ```

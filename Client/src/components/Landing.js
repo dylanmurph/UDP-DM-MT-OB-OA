@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Landing() {
   return (
     <div>
-      <h1>Welcome to BnB Smart Access</h1>
+      <h1>Welcome to HostLock</h1>
       <p>Please choose an option:</p>
       <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
         <Link to="/register">
