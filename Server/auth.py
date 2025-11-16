@@ -11,6 +11,7 @@ from . import bcrypt
 
 EMAIL_REGEX = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 CONTACT_REGEX = r"^\+?\d{7,15}$"
+VALID_ROLES = ["user", "host", "admin"]  # Define valid roles for registration
 
 # Create Blueprint
 auth_bp = Blueprint("auth", __name__)
@@ -26,20 +27,25 @@ def register():
     email = data.get("email", "").lower()
     password = data.get("password")
     contact_number = data.get("contact_number")
-    role = data.get("role", "user")
+    role = data.get("role", "user").lower()
 
+    # Validation
     if not name or not email or not password:
         return jsonify({"message": "Name, email, and password are required"}), 400
     if not re.match(EMAIL_REGEX, email):
         return jsonify({"message": "Invalid email format"}), 400
     if contact_number and not re.match(CONTACT_REGEX, contact_number):
         return jsonify({"message": "Invalid contact number format"}), 400
+    if role not in VALID_ROLES:
+        return jsonify({"message": f"Invalid role. Must be one of {VALID_ROLES}."}), 400
     if User.query.filter_by(email=email).first():
         return jsonify({"message": "Email already registered"}), 400
 
+    # Create the user object
     user = User(name=name, email=email, contact_number=contact_number, role=role)
     user.set_password(password, bcrypt)
 
+    # Add user to the database
     try:
         db.session.add(user)
         db.session.commit()
@@ -66,15 +72,18 @@ def login():
     email = data.get("email", "").lower()
     password = data.get("password")
 
+    # Find the user by email
     user = User.query.filter_by(email=email).first()
     if not user:
         return jsonify({"message": "User not found"}), 404
     if not user.check_password(password, bcrypt):
         return jsonify({"message": "Invalid password"}), 401
 
+    # Update the last login time
     user.last_login_at = datetime.utcnow()
     db.session.commit()
 
+    # Generate the JWT access token
     access_token = create_access_token(identity={"id": user.id, "role": user.role})
     return jsonify({
         "message": "Login successful",
