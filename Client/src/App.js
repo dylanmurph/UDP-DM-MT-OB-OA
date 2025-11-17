@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import Landing from "./components/Landing";
 import Home from "./components/Home";
@@ -34,27 +34,35 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Landing />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/login"
+            element={!user ? <Login setUser={setUser} /> : <Navigate to="/home" replace />}
+          />
+          <Route
+            path="/home"
+            element={user ? <Home user={user} setUser={setUser} /> : <Navigate to="/" replace />}
+          />
 
           {/* Auth routes */}
           <Route path="/auth/login" element={<Login setUser={setUser} />} />
           <Route path="/auth/register" element={<Register />} />
 
           {/* Guest routes */}
-          <Route path="/guest/home" element={<GuestHome />} />
-          <Route path="/guest/alerts" element={<GuestAlerts />} />
-          <Route path="/guest/bookings" element={<GuestBookings />} />
-          <Route path="/guest/settings" element={<GuestSettings />} />
+          <Route path="/guest/home" element={user ? <GuestHome user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/guest/alerts" element={user ? <GuestAlerts user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/guest/bookings" element={user ? <GuestBookings user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/guest/settings" element={user ? <GuestSettings user={user} setUser={setUser} /> : <Navigate to="/login" replace />} />
 
           {/* Host routes */}
-          <Route path="/host/home" element={<HostHome />} />
-          <Route path="/host/guests" element={<HostGuests />} />
-          <Route path="/host/alerts" element={<HostAlerts />} />
-          <Route path="/host/logs" element={<HostLogs />} />
-          <Route path="/host/settings" element={<HostSettings />} />
+          <Route path="/host/home" element={user ? <HostHome user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/host/guests" element={user ? <HostGuests user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/host/alerts" element={user ? <HostAlerts user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/host/logs" element={user ? <HostLogs user={user} /> : <Navigate to="/login" replace />} />
+          <Route path="/host/settings" element={user ? <HostSettings user={user} setUser={setUser} /> : <Navigate to="/login" replace />} />
 
           {/* Catch-all */}
-          <Route path="*" element={<Landing />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </Router>
