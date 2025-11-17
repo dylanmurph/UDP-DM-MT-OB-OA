@@ -20,7 +20,7 @@ import HostLogs from "./components/Host/HostLogs";
 import HostSettings from "./components/Host/HostSettings";
 
 function App() {
-  const [user, setUser] = useState(() => {
+  const [, setUser] = useState(() => {
     const token = localStorage.getItem("token");
     if (!token) return null;
     return { token };
