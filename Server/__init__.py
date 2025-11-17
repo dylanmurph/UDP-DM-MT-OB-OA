@@ -67,4 +67,8 @@ def create_app():
 
     app.register_blueprint(auth_bp)
 
+    # Register PubNub routes
+    from .pubnub import register_pubnub_routes
+    register_pubnub_routes(app)
+
     return app  # Return the app instance

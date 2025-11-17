@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.13.1",
     "lucide-react": "^0.553.0",
+    "pubnub": "^7.6.3",
+    "pubnub-react": "^3.0.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^7.9.5",
