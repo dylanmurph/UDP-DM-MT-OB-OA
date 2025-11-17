@@ -30,12 +30,13 @@ function App() {
     <Router>
       <div className="max-w-md mx-auto p-4">
         <Routes>
-
           {/* Public routes */}
           <Route path="/" element={<Landing />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
+
+          {/* Auth routes */}
+          <Route path="/auth/login" element={<Login setUser={setUser} />} />
+          <Route path="/auth/register" element={<Register />} />
 
           {/* Guest routes */}
           <Route path="/guest/home" element={<GuestHome />} />
@@ -52,7 +53,6 @@ function App() {
 
           {/* Catch-all */}
           <Route path="*" element={<Landing />} />
-
         </Routes>
       </div>
     </Router>
