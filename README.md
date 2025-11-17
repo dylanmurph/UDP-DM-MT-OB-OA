@@ -36,41 +36,21 @@ git clone <repo-url>
 cd <project-folder>
 ```
 
-## 2. Setup Python backend
+## 2. Build React frontend 
 ```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-pip install -r Server/requirements.txt
-
-## 3. Setup React frontend
-```bash
-npm install (in root)
 cd Client
-npm install
-```
-
-## 4. Setup Nginx
-```bash
-sudo cp nginx/hostlocksd3b.online /etc/nginx/sites-available/
-sudo ln -s /etc/nginx/sites-available/hostlocksd3b.online /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
-sudo certbot --nginx -d hostlocksd3b.online -d www.hostlocksd3b.online
-```
-
-## 5. Build & Deploy React frontend (in Client)
-```bash
 npm run build
 sudo cp -r build/* /var/www/html/
 ```
 
-## 6. Set Up Tailwind
-npm install tailwindcss postcss autoprefixer
-npm install lucide-react (for  the icons)
-
-## 7. Access the app
+## 3. Run Backend 
 ```bash
+cd ..
+source venv/bin/activate
 python -m Server.run
+```
+
+## 4. Access App
+```bash
+https://www.hostlocksd3b.online
 ```
