@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Landing from "./components/Landing";
-import Register from "./components/Register";
-import Login from "./components/Login";
 import Home from "./components/Home";
+
+// Auth pages
+import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
 
 // Guest pages
 import GuestHome from "./components/Guest/GuestHome";

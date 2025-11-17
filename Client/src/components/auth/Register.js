@@ -33,9 +33,8 @@ function Register({ setUser }) {
     try {
       setLoading(true);
 
-      // if your backend expects "user"/"host", map here:
-      // const backendRole = role === "guest" ? "user" : "host";
-      const backendRole = role; // or change to the line above
+      // if backend expects different values, map here
+      const backendRole = role;
 
       const res = await api.post("/register", {
         name,
@@ -52,7 +51,7 @@ function Register({ setUser }) {
         user_id: res.data.user_id,
         name: res.data.name,
         email: res.data.email,
-        role: res.data.role, // should come back as "guest"/"host" (or map)
+        role: res.data.role,
         token,
       });
 
@@ -66,31 +65,39 @@ function Register({ setUser }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-4">
-      {/* Card - sized for phone, minimal vertical padding */}
-      <div className="w-full max-w-sm bg-white/95 rounded-xl border border-cyan-500/20 shadow-xl shadow-cyan-500/20 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background grid pattern (same vibe as Login) */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(0,212,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.1) 1px, transparent 1px)",
+            backgroundSize: "50px 50px",
+          }}
+        />
+      </div>
+
+      {/* Card */}
+      <div className="w-full max-w-md relative z-10 bg-white/95 border border-cyan-500/20 rounded-2xl shadow-2xl shadow-cyan-500/20 backdrop-blur">
         {/* Header */}
-        <div className="px-5 pt-5 pb-3 text-center">
-          <div className="mx-auto mb-3">
-            <img
-              src={logoImage}
-              alt="HostLock"
-              className="h-14 w-auto mx-auto object-contain"
-            />
-          </div>
+        <div className="px-6 pt-6 pb-4 text-center">
+          <img
+            src={logoImage}
+            alt="HostLock"
+            className="h-20 w-auto mx-auto mb-4 object-contain"
+          />
+
           <h1 className="text-xl font-semibold text-slate-900">
             Create Account
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-slate-500 text-sm mt-1">
             Register to get started
           </p>
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={handleRegister}
-          className="px-5 pb-5 space-y-3 text-sm"
-        >
+        <form onSubmit={handleRegister} className="px-6 pb-6 space-y-4 text-sm">
           {/* Role selection */}
           <div>
             <p className="text-xs font-medium text-slate-700 mb-1">I am a</p>
@@ -147,7 +154,7 @@ function Register({ setUser }) {
             </div>
           </div>
 
-          {/* Name */}
+          {/* Full Name */}
           <div>
             <label
               htmlFor="name"
@@ -161,7 +168,7 @@ function Register({ setUser }) {
                 id="name"
                 type="text"
                 className="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 py-2 text-xs outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
-                placeholder="John Doe"
+                placeholder="full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -183,10 +190,31 @@ function Register({ setUser }) {
                 id="email"
                 type="email"
                 className="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 py-2 text-xs outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
-                placeholder="you@example.com"
+                placeholder="you@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+              />
+            </div>
+          </div>
+
+          {/* Contact Number */}
+          <div>
+            <label
+              htmlFor="contactNumber"
+              className="block text-xs font-medium text-slate-700"
+            >
+              Contact Number
+            </label>
+            <div className="relative mt-1">
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                id="contactNumber"
+                type="tel"
+                className="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 py-2 text-xs outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
+                placeholder="08XXXXXXXX"
+                value={contactNumber}
+                onChange={(e) => setContactNumber(e.target.value)}
               />
             </div>
           </div>
@@ -237,32 +265,11 @@ function Register({ setUser }) {
             </div>
           </div>
 
-          {/* Contact Number */}
-          <div>
-            <label
-              htmlFor="contactNumber"
-              className="block text-xs font-medium text-slate-700"
-            >
-              Contact Number
-            </label>
-            <div className="relative mt-1">
-              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                id="contactNumber"
-                type="tel"
-                className="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-3 py-2 text-xs outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
-                placeholder="08XXXXXXXX"
-                value={contactNumber}
-                onChange={(e) => setContactNumber(e.target.value)}
-              />
-            </div>
-          </div>
-
           {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-cyan-500 hover:bg-cyan-600 text-slate-950 text-sm font-semibold py-2.5 shadow-lg shadow-cyan-500/30 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full rounded-lg bg-cyan-500 hover:bg-cyan-600 text-navy-950 text-sm font-semibold py-2.5 shadow-lg shadow-cyan-500/30 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Creating account..." : "Create Account"}
           </button>
