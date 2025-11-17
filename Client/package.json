@@ -8,6 +8,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.13.1",
+    "lucide-react": "^0.553.0",
     "pubnub": "^7.6.3",
     "pubnub-react": "^3.0.2",
     "react": "^18.0.0",
@@ -42,6 +43,10 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "autoprefixer": "^10.4.22",
+    "concurrently": "^9.2.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "tailwindcss-cli": "^0.1.2"
   }
 }
