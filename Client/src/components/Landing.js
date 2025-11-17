@@ -7,10 +7,10 @@ function Landing() {
       <h1>Welcome to HostLock</h1>
       <p>Please choose an option:</p>
       <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-        <Link to="/register">
+        <Link to="/auth/register">
           <button>Register</button>
         </Link>
-        <Link to="/login">
+        <Link to="/auth/login">
           <button>Login</button>
         </Link>
       </div>

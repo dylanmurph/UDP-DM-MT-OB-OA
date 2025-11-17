@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import Landing from "./components/Landing";
-import Register from "./components/Register";
-import Login from "./components/Login";
 import Home from "./components/Home";
+
+// Auth pages
+import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
 
 // Guest pages
 import GuestHome from "./components/Guest/GuestHome";
@@ -41,6 +43,10 @@ function App() {
             path="/home"
             element={user ? <Home user={user} setUser={setUser} /> : <Navigate to="/" replace />}
           />
+
+          {/* Auth routes */}
+          <Route path="/auth/login" element={<Login setUser={setUser} />} />
+          <Route path="/auth/register" element={<Register />} />
 
           {/* Guest routes */}
           <Route path="/guest/home" element={user ? <GuestHome user={user} /> : <Navigate to="/login" replace />} />
