@@ -22,11 +22,13 @@ import HostLogs from "./components/Host/HostLogs";
 import HostSettings from "./components/Host/HostSettings";
 
 function App() {
-  const [user, setUser] = useState(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-    return { token };
-  });
+  // const [user, setUser] = useState(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) return null;
+  //   return { token };
+  // });
+
+  const [user, setUser] = useState({ token: "dev" });
 
   return (
     <Router>
