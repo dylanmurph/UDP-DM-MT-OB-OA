@@ -4,7 +4,7 @@ import { Calendar, Bell, Settings, MapPin, Home } from "lucide-react"
 
 // TEMP – swap with real data later
 const guestData = {
-  name: "Oluwadamilare",
+  name: "Emily Clark",
   propertyName: "Dundalk Apartment",
   propertyAddress: "123 Main Street, Dundalk, Ireland",
   checkIn: "2025-11-20 15:00",
