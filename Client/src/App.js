@@ -40,6 +40,10 @@ useEffect(() => {
     .finally(() => setLoading(false));
 }, []);
 
+	if (loading) {
+  		return <div>Loading...</div>;
+	}
+
   return (
     <Router>
       <div className="max-w-md mx-auto p-4">
