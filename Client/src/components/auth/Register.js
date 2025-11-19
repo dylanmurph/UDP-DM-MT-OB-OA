@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Building2,
   UserCircle,
@@ -12,6 +12,7 @@ import api from "../../api";
 import logoImage from "../../logo.svg"; // point to your logo
 
 function Register({ setUser }) {
+  const navigate = useNavigate();
   const [role, setRole] = useState("guest"); // "guest" | "host"
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -56,6 +57,12 @@ function Register({ setUser }) {
       });
 
       setMessage(res.data.message || "Registered successfully");
+
+      if(res.data.role === "host") 
+        navigate("/host/home");
+      else
+        navigate("/guest/home"); 
+
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || "Error registering");

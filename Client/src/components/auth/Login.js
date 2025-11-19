@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import api from "../../api";
 
@@ -7,6 +7,7 @@ import api from "../../api";
 import logoImage from "../../logo.svg";
 
 function Login({ setUser }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -32,6 +33,12 @@ function Login({ setUser }) {
       });
 
       setMessage(res.data.message || "Logged in successfully");
+
+      if(res.data.role === "host") 
+        navigate("/host/home");
+      else
+        navigate("/guest/home"); 
+
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || "Error logging in");
