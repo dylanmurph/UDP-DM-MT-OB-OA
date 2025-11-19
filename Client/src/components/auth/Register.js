@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Building2,
   UserCircle,
@@ -9,9 +9,9 @@ import {
   Phone,
 } from "lucide-react";
 import api from "../../api";
-import logoImage from "../../logo.svg"; // point to your logo
+import logoImage from "../../logo.svg";
 
-function Register({ setUser }) {
+function Register() {
   const [role, setRole] = useState("guest"); // "guest" | "host"
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,6 +20,8 @@ function Register({ setUser }) {
   const [contactNumber, setContactNumber] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -33,10 +35,9 @@ function Register({ setUser }) {
     try {
       setLoading(true);
 
-      // if backend expects different values, map here
       const backendRole = role;
 
-      const res = await api.post("/register", {
+      await api.post("/register", {
         name,
         email,
         password,
@@ -44,18 +45,10 @@ function Register({ setUser }) {
         role: backendRole,
       });
 
-      const token = res.data.access_token;
-      localStorage.setItem("token", token);
-
-      setUser({
-        user_id: res.data.user_id,
-        name: res.data.name,
-        email: res.data.email,
-        role: res.data.role,
-        token,
-      });
-
-      setMessage(res.data.message || "Registered successfully");
+      // no token / no setUser here:
+      // user must log in after registering
+      setMessage("Registered successfully. Please log in.");
+      navigate("/auth/login", { replace: true });
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || "Error registering");

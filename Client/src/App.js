@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import Landing from "./components/Landing";
-import Home from "./components/Home";
-import Unauthorized from "./components/Unauthorized";
 
 // Auth pages
 import Login from "./components/auth/Login";
@@ -22,131 +20,166 @@ import HostAlerts from "./components/Host/HostAlerts";
 import HostLogs from "./components/Host/HostLogs";
 import HostSettings from "./components/Host/HostSettings";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+// helper: where should this user land?
+const getHomePath = (user) => {
+  if (!user) return "/auth/login";
+  return user.role === "host" ? "/host/home" : "/guest/home";
+};
+
+// wrapper to protect role-specific routes
+function RequireRole({ user, role, children }) {
+  if (!user) {
+    return <Navigate to="/auth/login" replace />;
+  }
+  if (user.role !== role) {
+    // logged in but wrong role -> send to THEIR home
+    return <Navigate to={getHomePath(user)} replace />;
+  }
+  return children;
+}
 
 function App() {
   const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem("user");
+    if (!stored) return null;
     try {
-      const savedUser = localStorage.getItem("user");
-      return savedUser ? JSON.parse(savedUser) : null;
+      return JSON.parse(stored);
     } catch {
       return null;
     }
   });
 
+  const handleSetUser = (u) => {
+    if (u) {
+      localStorage.setItem("user", JSON.stringify(u));
+      localStorage.setItem("token", u.token);
+    } else {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+    }
+    setUser(u);
+  };
+
   return (
     <Router>
       <div className="max-w-md mx-auto p-4">
         <Routes>
-          {/* PUBLIC */}
+          {/* Public landing */}
           <Route path="/" element={<Landing />} />
-          <Route path="/auth/login" element={<Login setUser={setUser} />} />
-          <Route path="/auth/register" element={<Register setUser={setUser} />} />
 
+          {/* Register:
+              - if logged in -> go to their home
+              - if not logged in -> show register */}
+          <Route
+            path="/auth/register"
+            element={
+              !user ? <Register /> : <Navigate to={getHomePath(user)} replace />
+            }
+          />
+
+          {/* Login:
+              - if logged in -> go to their home
+              - if not logged in -> show login */}
+          <Route
+            path="/auth/login"
+            element={
+              !user ? (
+                <Login setUser={handleSetUser} />
+              ) : (
+                <Navigate to={getHomePath(user)} replace />
+              )
+            }
+          />
+
+          {/* Generic /home just bounces to role home */}
           <Route
             path="/home"
             element={
-              !user ? (
-                <Navigate to="/auth/login" replace />
-              ) : user.role === "guest" ? (
-                <Navigate to="/guest/home" replace />
-              ) : user.role === "host" ? (
-                <Navigate to="/host/home" replace />
-              ) : user.role === "admin" ? (
-                <Navigate to="/admin/home" replace />
+              user ? (
+                <Navigate to={getHomePath(user)} replace />
               ) : (
                 <Navigate to="/auth/login" replace />
               )
             }
           />
 
-          {/* GUEST ROUTES */}
+          {/* Guest routes (only guests can see) */}
           <Route
             path="/guest/home"
             element={
-              <ProtectedRoute user={user} role="guest">
+              <RequireRole user={user} role="guest">
                 <GuestHome user={user} />
-              </ProtectedRoute>
+              </RequireRole>
             }
           />
-
           <Route
             path="/guest/alerts"
             element={
-              <ProtectedRoute user={user} role="guest">
+              <RequireRole user={user} role="guest">
                 <GuestAlerts user={user} />
-              </ProtectedRoute>
+              </RequireRole>
             }
           />
-
           <Route
             path="/guest/bookings"
             element={
-              <ProtectedRoute user={user} role="guest">
+              <RequireRole user={user} role="guest">
                 <GuestBookings user={user} />
-              </ProtectedRoute>
+              </RequireRole>
             }
           />
-
           <Route
             path="/guest/settings"
             element={
-              <ProtectedRoute user={user} role="guest">
-                <GuestSettings user={user} setUser={setUser} />
-              </ProtectedRoute>
+              <RequireRole user={user} role="guest">
+                <GuestSettings user={user} setUser={handleSetUser} />
+              </RequireRole>
             }
           />
 
-          {/* HOST ROUTES */}
+          {/* Host routes (only hosts can see) */}
           <Route
             path="/host/home"
             element={
-              <ProtectedRoute user={user} role="host">
+              <RequireRole user={user} role="host">
                 <HostHome user={user} />
-              </ProtectedRoute>
+              </RequireRole>
             }
           />
-
           <Route
             path="/host/guests"
             element={
-              <ProtectedRoute user={user} role="host">
+              <RequireRole user={user} role="host">
                 <HostGuests user={user} />
-              </ProtectedRoute>
+              </RequireRole>
             }
           />
-
           <Route
             path="/host/alerts"
             element={
-              <ProtectedRoute user={user} role="host">
+              <RequireRole user={user} role="host">
                 <HostAlerts user={user} />
-              </ProtectedRoute>
+              </RequireRole>
             }
           />
-
           <Route
             path="/host/logs"
             element={
-              <ProtectedRoute user={user} role="host">
+              <RequireRole user={user} role="host">
                 <HostLogs user={user} />
-              </ProtectedRoute>
+              </RequireRole>
             }
           />
-
           <Route
             path="/host/settings"
             element={
-              <ProtectedRoute user={user} role="host">
-                <HostSettings user={user} setUser={setUser} />
-              </ProtectedRoute>
+              <RequireRole user={user} role="host">
+                <HostSettings user={user} setUser={handleSetUser} />
+              </RequireRole>
             }
           />
 
-          {/* UNAUTHORIZED PAGE */}
-          <Route path="/unauthorized" element={<Unauthorized />} />
-
-          {/* CATCH ALL */}
+          {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
