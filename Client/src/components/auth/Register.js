@@ -11,7 +11,7 @@ import {
 import api from "../../api";
 import logoImage from "../../logo.svg";
 
-function Register(setUser) {
+function Register({setUser}) {
   const navigate = useNavigate();
   const [role, setRole] = useState("guest");
   const [name, setName] = useState("");

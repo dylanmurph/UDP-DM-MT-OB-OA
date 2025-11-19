@@ -4,14 +4,14 @@ import { Lock, Mail } from "lucide-react";
 import api from "../../api";
 import logoImage from "../../logo.svg";
 
-function Login(setUser) {
+function Login({setUser}) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage("");
     setLoading(true);
@@ -21,7 +21,6 @@ function Login(setUser) {
 
       const token = res.data.access_token;
       localStorage.setItem("token", token);
-      console.log(localStorage.getItem("token"));
 
       setUser({
         user_id: res.data.user_id,
