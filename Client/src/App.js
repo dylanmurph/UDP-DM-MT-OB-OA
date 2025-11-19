@@ -23,6 +23,7 @@ import HostLogs from "./components/Host/HostLogs";
 import HostSettings from "./components/Host/HostSettings";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
 	const [user, setUser] = useState(() => {
