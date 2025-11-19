@@ -29,25 +29,16 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-	console.log(token);
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    api.get("/me", { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => {
-        setUser({ ...res.data, token });
-      })
-      .catch(err => {
-        console.error("Token invalid or expired:", err);
-        localStorage.removeItem("token");
-        setUser(null);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+useEffect(() => {
+  api.get("/me")
+    .then(res => setUser(res.data))
+    .catch(err => {
+      console.error("Token invalid or expired:", err);
+      localStorage.removeItem("token");
+      setUser(null);
+    })
+    .finally(() => setLoading(false));
+}, []);
 
   return (
     <Router>
