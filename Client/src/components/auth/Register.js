@@ -11,7 +11,7 @@ import {
 import api from "../../api";
 import logoImage from "../../logo.svg";
 
-function Register() {
+function Register(setUser) {
   const navigate = useNavigate();
   const [role, setRole] = useState("guest");
   const [name, setName] = useState("");
@@ -44,6 +44,14 @@ function Register() {
 
       const token = res.data.access_token;
       localStorage.setItem("token", token);
+
+      setUser({
+      user_id: res.data.user_id,
+      name: res.data.name,
+      email: res.data.email,
+      role: res.data.role,
+      token: token,
+    });
 
       navigate("/home");
 

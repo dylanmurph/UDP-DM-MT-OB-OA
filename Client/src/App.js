@@ -50,7 +50,7 @@ useEffect(() => {
             path="/auth/login"
             element={
               <PublicRoute user={user}>
-                <Login />
+                <Login setUser={setUser} />
               </PublicRoute>
             }
           />
@@ -58,7 +58,7 @@ useEffect(() => {
             path="/auth/register"
             element={
               <PublicRoute user={user}>
-                <Register/>
+                <Register setUser={setUser} />
               </PublicRoute>
             }
           />
