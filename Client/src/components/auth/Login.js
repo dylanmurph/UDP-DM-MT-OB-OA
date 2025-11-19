@@ -21,6 +21,7 @@ function Login() {
 
       const token = res.data.access_token;
       localStorage.setItem("token", token);
+      console.log(localStorage.getItem("token"));
 
       navigate("/home");
     } catch (err) {
