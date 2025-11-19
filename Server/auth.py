@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from .models import db, User, BnB, Booking, Guest, GuestPhoto, Credential, AccessLog, UserRole
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import datetime
 import re
 from . import bcrypt
@@ -10,6 +10,20 @@ CONTACT_REGEX = r"^\+?\d{7,15}$"
 VALID_ROLES = ["guest", "host", "admin"]
 
 auth_bp = Blueprint("auth", __name__)
+
+@auth_bp.route("/me", methods=["GET"])
+@jwt_required()
+def me():
+    identity = get_jwt_identity()  # {"id": ..., "role": ...}
+    user = User.query.get(identity["id"])
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+    return jsonify({
+        "user_id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "role": user.role.value
+    }), 200
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
