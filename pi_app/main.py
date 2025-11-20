@@ -107,11 +107,13 @@ LED_YEL = 23
 LED_GRN = 24
 BUZZ = 18
 RELAY = OutputDevice(17, active_high=False)
+TAMP = 27
 
 GPIO.setup(LED_RED, GPIO.OUT)
 GPIO.setup(LED_YEL, GPIO.OUT)
 GPIO.setup(LED_GRN, GPIO.OUT)
 GPIO.setup(BUZZ, GPIO.OUT)
+GPIO.setup(TAMP, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 GPIO.output(LED_RED, True)  # Default = red ON
 RELAY.on()
@@ -148,10 +150,46 @@ def take_photo(uid_hex):
 
     return path, filename
 
+# ----------------------
+# Tamper Switch
+# ----------------------
 
+def tampered_with():
+    return GPIO.input(TAMP) == GPIO.HIGH
+
+def handle_tamper():
+    print("!!! TAMPER DETECTED !!!")
+    RELAY.on()
+    GPIO.output(LED_GRN, False)
+    for _ in range(10):
+        GPIO.output(LED_RED, True)
+        GPIO.output(LED_YEL, False)
+        GPIO.output(BUZZ, True)
+        time.sleep(0.1)
+        GPIO.output(LED_RED, False)
+        GPIO.output(LED_YEL, True)
+        GPIO.output(BUZZ, False)
+        time.sleep(0.1)
+    
+    GPIO.output(LED_RED, True)
+    GPIO.output(LED_YEL, False)
+    GPIO.output(LED_GRN, False)
+    
+    try:
+        pubnub.publish().channel(CHANNEL).message({
+            "event": "tamper",
+            "timestamp": time.time()
+        }).sync()
+        print("Tamper alert sent to server.")
+    except Exception as e:
+        print("Failed to send tamper alert:", e)
+    
+    
 # ----------------------
 # Access Control LEDs/Buzzer
 # ----------------------
+
+
 def grant_access():
     GPIO.output(LED_RED, False)
     GPIO.output(LED_YEL, False)
@@ -179,9 +217,22 @@ def deny_access():
 # MAIN LOOP
 # ----------------------
 print("Waiting for NFC tag...")
-
+tampered_already = False
 try:
     while True:
+        
+        # Check tamper switch
+        if not tampered_already:
+            if tampered_with():
+                handle_tamper()
+                tampered_already = True
+                
+        if not tampered_with():
+            tampered_already = False
+        else:
+            time.sleep(1)
+            continue
+    
         uid = pn532.read_passive_target(timeout=0.5)
 
         if uid:
