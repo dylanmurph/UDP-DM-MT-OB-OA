@@ -2,6 +2,19 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function Landing() {
+  useEffect(() => {
+    async function loadUsers() {
+      try {
+        const res = await api.get("/users");
+        const data = await res.data;
+        console.log("Users from backend:", data);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    }
+
+    loadUsers();
+  }, []);
   return (
     <div>
       <h1>Welcome to HostLock</h1>
