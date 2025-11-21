@@ -321,3 +321,5 @@ export function AdminHosts() {
     </>
   );
 }
+
+export default AdminHosts;

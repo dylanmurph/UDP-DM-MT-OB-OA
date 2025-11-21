@@ -312,3 +312,5 @@ export function AdminProperties() {
     </>
   );
 }
+
+export default AdminProperties;
