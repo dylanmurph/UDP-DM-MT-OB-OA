@@ -11,13 +11,13 @@ import {
   Settings,
 } from "lucide-react";
 
-export function GuestSettings({ setUser }) {
+export function GuestSettings({ onLogout }) {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
-    if (setUser) {
-      setUser(null); // App's handleSetUser will clear localStorage + user
+    if (onLogout) {
+      onLogout(); // calls App.handleLogout -> clears token + user
     }
   };
 

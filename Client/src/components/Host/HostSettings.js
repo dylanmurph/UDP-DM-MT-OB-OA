@@ -12,13 +12,13 @@ import {
   Settings,
 } from "lucide-react";
 
-export function HostSettings({ setUser }) {
+export function HostSettings({ onLogout }) {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
-    if (setUser) {
-      setUser(null); // clears user via App
+    if (onLogout) {
+      onLogout(); // calls App.handleLogout
     }
   };
 

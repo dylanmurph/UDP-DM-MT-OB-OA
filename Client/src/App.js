@@ -75,7 +75,7 @@ function App() {
   // Log Out
   const handleLogout = async () => {
     try {
-      await api.post("/logout"); // this will show up in your Flask logs as POST /logout
+      await api.post("/logout");
     } catch (err) {
       console.error("Logout request failed:", err);
     }
