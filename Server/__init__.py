@@ -64,7 +64,9 @@ def create_app():
 
     # Register the authentication blueprint (for login, registration, etc.)
     from .auth import auth_bp
+    from .dbroute import db_bp
 
     app.register_blueprint(auth_bp)
+    app.register_blueprint(db_bp)
 
     return app  # Return the app instance
