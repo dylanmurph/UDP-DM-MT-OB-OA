@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import api from "../../api";
+
 import logoImage from "../../logo.svg";
 
 function Login({setUser}) {
@@ -10,6 +11,7 @@ function Login({setUser}) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
    const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,17 +22,31 @@ function Login({setUser}) {
       const res = await api.post("/login", { email, password });
 
       const token = res.data.access_token;
-      localStorage.setItem("token", token);
 
-      setUser({
+      const userData = {
         user_id: res.data.user_id,
         name: res.data.name,
         email: res.data.email,
         role: res.data.role,
         token: token,
-      });
+      };
 
-      navigate("/home");
+      // store token/user if you want it later
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      setUser(userData);
+
+      setMessage(res.data.message || "Logged in successfully");
+
+      // role-based redirect
+      if (userData.role === "host") {
+        navigate("/host/home", { replace: true });
+      } else if (userData.role === "guest") {
+        navigate("/guest/home", { replace: true });
+      } else {
+        navigate("/home", { replace: true });
+      }
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || "Error logging in");
@@ -55,6 +71,7 @@ function Login({setUser}) {
 
       {/* Card */}
       <div className="w-full max-w-md relative z-10 bg-white/95 border border-cyan-500/20 rounded-2xl shadow-2xl shadow-cyan-500/20 backdrop-blur">
+        {/* Header */}
         <div className="px-6 pt-6 pb-4 text-center">
           <img
             src={logoImage}
