@@ -1,5 +1,4 @@
 import React from "react";
-import { accessLogs } from "../../lib/mockData";
 import { Download, Filter } from "lucide-react";
 
 export function HostAccessLogs() {

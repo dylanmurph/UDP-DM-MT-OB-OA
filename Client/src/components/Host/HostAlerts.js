@@ -1,5 +1,4 @@
 import React from "react";
-import { hostAlerts } from "../../lib/mockData";
 import { AlertTriangle, XCircle, CheckCircle, Mail } from "lucide-react";
 
 export function HostAlerts() {

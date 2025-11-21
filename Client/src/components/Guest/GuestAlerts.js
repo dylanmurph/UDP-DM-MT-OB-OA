@@ -1,5 +1,4 @@
 import React from "react";
-import { guestAlerts } from "../../lib/mockData";
 import { AlertCircle, Info, Bell, CheckCircle, Mail } from "lucide-react";
 
 export function GuestAlerts() {

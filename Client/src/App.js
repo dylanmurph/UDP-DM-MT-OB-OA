@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import api from "./api";
 
+// Pages
 import Landing from "./components/Landing";
 
 // Auth pages
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+
+// Admin pages
+import AdminDashboard from "./components/Admin/AdminDashboard";
+import AdminHosts from "./components/Admin/AdminHosts";
+import AdminProperties from "./components/Admin/AdminProperties";
 
 // Guest pages
 import GuestHome from "./components/Guest/GuestHome";
@@ -24,7 +29,12 @@ import HostSettings from "./components/Host/HostSettings";
 // helper: where should this user land?
 const getHomePath = (user) => {
   if (!user) return "/auth/login";
-  return user.role === "host" ? "/host/home" : "/guest/home";
+
+  if (user.role === "admin") return "/admin/dashboard";
+  if (user.role === "host") return "/host/home";
+
+  // default to guest home
+  return "/guest/home";
 };
 
 // wrapper to protect role-specific routes
@@ -104,7 +114,48 @@ function App() {
             }
           />
 
-          {/* Guest routes (only guests can see) */}
+          {/* ======================= ADMIN ======================= */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <RequireRole user={user} role="admin">
+                <AdminDashboard user={user} />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/admin/hosts"
+            element={
+              <RequireRole user={user} role="admin">
+                <AdminHosts user={user} />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/admin/properties"
+            element={
+              <RequireRole user={user} role="admin">
+                <AdminProperties user={user} />
+              </RequireRole>
+            }
+          />
+          {/* optional: /admin root -> dashboard */}
+          <Route
+            path="/admin"
+            element={
+              user ? (
+                user.role === "admin" ? (
+                  <Navigate to="/admin/dashboard" replace />
+                ) : (
+                  <Navigate to={getHomePath(user)} replace />
+                )
+              ) : (
+                <Navigate to="/auth/login" replace />
+              )
+            }
+          />
+
+          {/* ======================= GUEST ======================= */}
           <Route
             path="/guest/home"
             element={
@@ -138,7 +189,7 @@ function App() {
             }
           />
 
-          {/* Host routes (only hosts can see) */}
+          {/* ======================= HOST ======================= */}
           <Route
             path="/host/home"
             element={

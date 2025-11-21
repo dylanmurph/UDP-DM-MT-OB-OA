@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MapPin, Calendar, Clock, Edit, XCircle, History as HistoryIcon, Home as HomeIcon, Bell, Settings} from "lucide-react";
-import { bookings, accessHistory } from "../../lib/mockData";
 
 function GuestBookings() {
   const location = useLocation();
