@@ -1,5 +1,6 @@
 import React from "react";
 import { AlertTriangle, XCircle, CheckCircle, Mail } from "lucide-react";
+import { hostAlerts } from "../../mockData";
 
 export function HostAlerts() {
   const pendingCount = hostAlerts.filter((a) => a.status === "Pending").length;

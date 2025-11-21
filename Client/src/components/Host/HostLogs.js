@@ -1,5 +1,6 @@
 import React from "react";
 import { Download, Filter } from "lucide-react";
+import { accessLogs } from "../../mockData";
 
 export function HostAccessLogs() {
   const successCount = accessLogs.filter((l) => l.status === "Success").length;

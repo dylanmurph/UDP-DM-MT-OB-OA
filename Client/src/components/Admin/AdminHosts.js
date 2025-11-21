@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { adminHosts, adminProperties } from "../../mockData";
 import {Search, UserPlus, Mail, Phone, Building2, UserCheck, Calendar, Trash2, Edit} from 'lucide-react';
 
 export function AdminHosts() {
@@ -321,3 +322,5 @@ export function AdminHosts() {
     </>
   );
 }
+
+export default AdminHosts;
