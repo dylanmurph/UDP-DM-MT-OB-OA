@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import db
-from .models import User, BnB, Booking, Guest, AccessLog, BookingStatus
+from .models import User, BnB, Booking, Guest, AccessLog, BookingStatus, UserRole
 
 db_bp = Blueprint("dbroute", __name__)
 
@@ -91,19 +91,19 @@ def get_host_alerts():
 
 # ------------------- GUEST ROUTES -------------------
 # Guest Current Booking
-@db_bp.route("/guest/current-booking", methods=["GET"])
+@db_bp.route("/guest/current-bookingd", methods=["GET"])
 @jwt_required()
 def get_guest_current_booking():
     identity = get_jwt_identity()
-    user_id = identity["user_id"]
+    user_id = identity["id"]
 
     # Look up the user
-    user = User.query.filter_by(id=user_id, role="guest").first()
+    user = User.query.filter_by(id=user_id, role=UserRole.GUEST).first()
     if not user:
         return jsonify({"message": "User not found or not a guest"}), 404
 
     # Get the current booking (assuming one booking per guest)
-    booking = Booking.query.filter_by(guest_id=user.id, status=BookingStatus.ACTIVE).first()
+    booking = Booking.query.filter_by(user_id=user.id, status=BookingStatus.ACTIVE).first()
     if not booking:
         return jsonify({"message": "Booking not found"}), 404
 
@@ -211,3 +211,13 @@ def add_guest_booking():
     db.session.commit()
 
     return jsonify({"message": "Booking added successfully"}), 201
+
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
+
+@db_bp.route("/guest/current-booking", methods=["GET"])
+def debug_jwt():
+    try:
+        verify_jwt_in_request()
+        return jsonify(get_jwt())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 422
