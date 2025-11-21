@@ -1,4 +1,5 @@
 import { Users, Building2, UserCheck, AlertTriangle } from 'lucide-react';
+import { adminHosts, adminProperties } from "../../mockData";
 
 export function AdminDashboard() {
   const totalHosts = adminHosts.length;
