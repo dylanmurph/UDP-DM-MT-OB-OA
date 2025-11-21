@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import db
-from .models import User, BnB, Booking, Guest, AccessLog
+from .models import User, BnB, Booking, Guest, AccessLog, BookingStatus
 
 db_bp = Blueprint("dbroute", __name__)
 
@@ -95,19 +95,24 @@ def get_host_alerts():
 @jwt_required()
 def get_guest_current_booking():
     identity = get_jwt_identity()
-    user_id = identity["id"]
+    user_id = identity["user_id"]
 
-    guest = Guest.query.filter_by(id=user_id).first()
-    if not guest or not guest.booking:
+    # Look up the user
+    user = User.query.filter_by(id=user_id, role="guest").first()
+    if not user:
+        return jsonify({"message": "User not found or not a guest"}), 404
+
+    # Get the current booking (assuming one booking per guest)
+    booking = Booking.query.filter_by(guest_id=user.id, status=BookingStatus.ACTIVE).first()
+    if not booking:
         return jsonify({"message": "Booking not found"}), 404
 
-    booking = guest.booking
     bnb = booking.bnb
 
     return jsonify({
-        "name": guest.name,
+        "name": user.name,
         "propertyName": bnb.name,
-        "propertyAddress": bnb.host_name,  # replace with actual address if available
+        "propertyAddress": bnb.host_name,
         "bookingCode": booking.booking_code,
         "checkIn": booking.check_in_time.strftime("%Y-%m-%d"),
         "checkInTime": booking.check_in_time.strftime("%H:%M"),
