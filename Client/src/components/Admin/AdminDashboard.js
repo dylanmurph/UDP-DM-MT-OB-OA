@@ -1,4 +1,3 @@
-import { adminHosts, adminProperties } from '../../lib/mockData';
 import { Users, Building2, UserCheck, AlertTriangle } from 'lucide-react';
 
 export function AdminDashboard() {
