@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import api from "./api";
 
 // Pages
 import Landing from "./components/Landing";
@@ -71,6 +72,16 @@ function App() {
     setUser(u);
   };
 
+  // Log Out
+  const handleLogout = async () => {
+    try {
+      await api.post("/logout"); // this will show up in your Flask logs as POST /logout
+    } catch (err) {
+      console.error("Logout request failed:", err);
+    }
+    handleSetUser(null);
+  };
+
   return (
     <Router>
       <div className="max-w-md mx-auto p-4">
@@ -78,9 +89,7 @@ function App() {
           {/* Public landing */}
           <Route path="/" element={<Landing />} />
 
-          {/* Register:
-              - if logged in -> go to their home
-              - if not logged in -> show register */}
+          {/* Register */}
           <Route
             path="/auth/register"
             element={
@@ -88,9 +97,7 @@ function App() {
             }
           />
 
-          {/* Login:
-              - if logged in -> go to their home
-              - if not logged in -> show login */}
+          {/* Login */}
           <Route
             path="/auth/login"
             element={
@@ -139,7 +146,6 @@ function App() {
               </RequireRole>
             }
           />
-          {/* optional: /admin root -> dashboard */}
           <Route
             path="/admin"
             element={
@@ -184,7 +190,7 @@ function App() {
             path="/guest/settings"
             element={
               <RequireRole user={user} role="guest">
-                <GuestSettings user={user} setUser={handleSetUser} />
+                <GuestSettings onLogout={handleLogout} />
               </RequireRole>
             }
           />
@@ -226,7 +232,7 @@ function App() {
             path="/host/settings"
             element={
               <RequireRole user={user} role="host">
-                <HostSettings user={user} setUser={handleSetUser} />
+                <HostSettings onLogout={handleLogout} />
               </RequireRole>
             }
           />
