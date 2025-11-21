@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from datetime import datetime
 import re
 from . import bcrypt
+import json
 
 EMAIL_REGEX = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 CONTACT_REGEX = r"^\+?\d{7,15}$"
@@ -59,7 +60,7 @@ def register():
     try:
         db.session.add(user)
         db.session.commit()
-        access_token = create_access_token(identity={"id": user.id, "role": user.role.value})
+        access_token = create_access_token(identity=json.dumps({"id": user.id, "role": user.role.value}))
         return jsonify({
             "message": f"{role.capitalize()} registered successfully",
             "access_token": access_token,
@@ -87,7 +88,7 @@ def login():
     user.last_login_at = datetime.utcnow()
     db.session.commit()
 
-    access_token = create_access_token(identity={"id": user.id, "role": user.role.value})
+    access_token = create_access_token(identity=json.dumps({"id": user.id, "role": user.role.value}))
     return jsonify({
         "message": "Login successful",
         "access_token": access_token,
