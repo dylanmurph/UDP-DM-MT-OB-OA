@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import db
 from .models import User, BnB, Booking, Guest, AccessLog, BookingStatus, UserRole
+import json
 
 db_bp = Blueprint("dbroute", __name__)
 
@@ -94,7 +95,7 @@ def get_host_alerts():
 @db_bp.route("/guest/current-booking", methods=["GET"])
 @jwt_required()
 def get_guest_current_booking():
-    identity = get_jwt_identity()
+    identity = json.loads(get_jwt_identity())
     user_id = identity["id"]
 
     # Look up the user
