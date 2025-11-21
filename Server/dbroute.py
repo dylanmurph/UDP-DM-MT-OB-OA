@@ -91,7 +91,7 @@ def get_host_alerts():
 
 # ------------------- GUEST ROUTES -------------------
 # Guest Current Booking
-@db_bp.route("/guest/current-bookingd", methods=["GET"])
+@db_bp.route("/guest/current-booking", methods=["GET"])
 @jwt_required()
 def get_guest_current_booking():
     identity = get_jwt_identity()
@@ -211,13 +211,3 @@ def add_guest_booking():
     db.session.commit()
 
     return jsonify({"message": "Booking added successfully"}), 201
-
-from flask_jwt_extended import verify_jwt_in_request, get_jwt
-
-@db_bp.route("/guest/current-booking", methods=["GET"])
-def debug_jwt():
-    try:
-        verify_jwt_in_request()
-        return jsonify(get_jwt())
-    except Exception as e:
-        return jsonify({"error": str(e)}), 422
