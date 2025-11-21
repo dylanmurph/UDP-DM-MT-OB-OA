@@ -5,15 +5,14 @@ import api from "../../api";
 
 import logoImage from "../../logo.svg";
 
-function Login({setUser}) {
-  const navigate = useNavigate();
+function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-   const handleLogin = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setMessage("");
     setLoading(true);
@@ -57,7 +56,7 @@ function Login({setUser}) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background grid */}
+      {/* Background grid pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div
           className="absolute inset-0"
@@ -78,14 +77,22 @@ function Login({setUser}) {
             alt="HostLock"
             className="h-20 w-auto mx-auto mb-4 object-contain"
           />
-          <h1 className="text-xl font-semibold text-slate-900">Welcome Back</h1>
-          <p className="text-slate-500 text-sm mt-1">Sign in to your account</p>
+
+          <h1 className="text-xl font-semibold text-slate-900">
+            Welcome Back
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Sign in to your account
+          </p>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleLogin} className="px-6 pb-6 space-y-4">
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-slate-700">Email</label>
+            <label className="block text-sm font-medium text-slate-700">
+              Email
+            </label>
             <div className="relative mt-1">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -101,7 +108,9 @@ function Login({setUser}) {
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-slate-700">Password</label>
+            <label className="block text-sm font-medium text-slate-700">
+              Password
+            </label>
             <div className="relative mt-1">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -115,6 +124,7 @@ function Login({setUser}) {
             </div>
           </div>
 
+          {/* Forgot Password */}
           <div className="text-right">
             <button
               type="button"
@@ -124,6 +134,7 @@ function Login({setUser}) {
             </button>
           </div>
 
+          {/* Submit button */}
           <button
             type="submit"
             disabled={loading}
@@ -132,10 +143,12 @@ function Login({setUser}) {
             {loading ? "Signing in..." : "Sign In"}
           </button>
 
+          {/* Backend message */}
           {message && (
             <p className="text-center text-sm text-slate-700">{message}</p>
           )}
 
+          {/* Register link */}
           <div className="text-center text-xs mt-1">
             <span className="text-slate-600">Don’t have an account? </span>
             <Link
