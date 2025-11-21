@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, Users, ListChecks, Bell, Settings } from "lucide-react";
-import api from "./api";
+import api from "../../api";
 
 const HostHome = () => {
   const location = useLocation();

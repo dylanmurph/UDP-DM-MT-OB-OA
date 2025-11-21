@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Calendar, Bell, Settings, MapPin, Home } from "lucide-react";
-import api from "./api"; // Axios instance with baseURL
+import api from "../../api";
 
 // Example test bookings for testing
 const testBookings = [
