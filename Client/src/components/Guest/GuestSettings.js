@@ -1,7 +1,13 @@
 import React from "react";
 import { Smartphone, Shield, Bell, User, Trash2, LogOut } from "lucide-react";
 
-export function GuestSettings() {
+export function GuestSettings({ setUser }) {
+  const handleLogout = () => {
+    if (setUser) {
+      setUser(null);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div>
@@ -25,7 +31,10 @@ export function GuestSettings() {
 
         <div className="px-4 py-4 space-y-4 text-sm">
           <div>
-            <label htmlFor="name" className="block text-xs font-medium text-slate-700">
+            <label
+              htmlFor="name"
+              className="block text-xs font-medium text-slate-700"
+            >
               Full Name
             </label>
             <input
@@ -37,7 +46,10 @@ export function GuestSettings() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-xs font-medium text-slate-700">
+            <label
+              htmlFor="email"
+              className="block text-xs font-medium text-slate-700"
+            >
               Email Address
             </label>
             <input
@@ -49,7 +61,10 @@ export function GuestSettings() {
           </div>
 
           <div>
-            <label htmlFor="phone" className="block text-xs font-medium text-slate-700">
+            <label
+              htmlFor="phone"
+              className="block text-xs font-medium text-slate-700"
+            >
               Phone Number
             </label>
             <input
@@ -62,49 +77,6 @@ export function GuestSettings() {
 
           <button className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-cyan-600 text-white text-sm font-medium hover:bg-cyan-700">
             Save Changes
-          </button>
-        </div>
-      </section>
-
-      {/* Linked Devices */}
-      <section className="bg-white rounded-2xl shadow-sm border border-slate-200">
-        <div className="px-4 py-3 border-b border-slate-100">
-          <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <Smartphone className="w-5 h-5" />
-            Linked Devices
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Manage your NFC devices and wallet passes
-          </p>
-        </div>
-
-        <div className="px-4 py-4 space-y-3 text-sm">
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <div>
-              <p className="text-sm">iPhone 14 Pro</p>
-              <p className="text-xs text-slate-500">
-                NFC-7829-AA • Added Nov 6, 2025
-              </p>
-            </div>
-            <button className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs hover:bg-slate-100">
-              Remove
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <div>
-              <p className="text-sm">Apple Watch</p>
-              <p className="text-xs text-slate-500">
-                NFC-7829-AB • Added Nov 6, 2025
-              </p>
-            </div>
-            <button className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs hover:bg-slate-100">
-              Remove
-            </button>
-          </div>
-
-          <button className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">
-            Add New Device
           </button>
         </div>
       </section>
@@ -124,7 +96,10 @@ export function GuestSettings() {
         <div className="px-4 py-4 space-y-4 text-sm">
           <div className="flex items-center justify-between">
             <div>
-              <label htmlFor="twofa" className="text-xs font-medium text-slate-700">
+              <label
+                htmlFor="twofa"
+                className="text-xs font-medium text-slate-700"
+              >
                 Two-Step Verification
               </label>
               <p className="text-xs text-slate-500">
@@ -136,7 +111,10 @@ export function GuestSettings() {
 
           <div className="flex items-center justify-between">
             <div>
-              <label htmlFor="biometric" className="text-xs font-medium text-slate-700">
+              <label
+                htmlFor="biometric"
+                className="text-xs font-medium text-slate-700"
+              >
                 Biometric Login
               </label>
               <p className="text-xs text-slate-500">
@@ -172,7 +150,10 @@ export function GuestSettings() {
         <div className="px-4 py-4 space-y-4 text-sm">
           <div className="flex items-center justify-between">
             <div>
-              <label htmlFor="push" className="text-xs font-medium text-slate-700">
+              <label
+                htmlFor="push"
+                className="text-xs font-medium text-slate-700"
+              >
                 Push Notifications
               </label>
               <p className="text-xs text-slate-500">
@@ -209,7 +190,10 @@ export function GuestSettings() {
 
           <div className="flex items-center justify-between">
             <div>
-              <label htmlFor="sms" className="text-xs font-medium text-slate-700">
+              <label
+                htmlFor="sms"
+                className="text-xs font-medium text-slate-700"
+              >
                 SMS Notifications
               </label>
               <p className="text-xs text-slate-500">
@@ -224,7 +208,10 @@ export function GuestSettings() {
       {/* Account Actions */}
       <section className="bg-white rounded-2xl shadow-sm border border-slate-200">
         <div className="px-4 py-4 space-y-3">
-          <button className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-sm hover:bg-slate-50"
+          >
             <LogOut className="w-4 h-4" />
             Log Out
           </button>

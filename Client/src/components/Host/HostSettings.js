@@ -1,7 +1,13 @@
 import React from "react";
-import { User, Bell, Building2, Shield } from "lucide-react";
+import { User, Bell, Building2, Shield, LogOut } from "lucide-react";
 
-export function HostSettings() {
+export function HostSettings({ setUser }) {
+  const handleLogout = () => {
+    if (setUser) {
+      setUser(null);
+    }
+  };
+
   return (
     <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-4xl">
       <div>
@@ -239,6 +245,19 @@ export function HostSettings() {
               />
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Account Actions */}
+      <section className="bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div className="px-4 py-4 space-y-3">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-sm hover:bg-slate-50"
+          >
+            <LogOut className="w-4 h-4" />
+            Log Out
+          </button>
         </div>
       </section>
     </div>
