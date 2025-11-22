@@ -29,6 +29,13 @@ The system is capable of logging all entrants and maintaining a record of employ
 
 # Project Setup
 
+## Want to access the website? Follow this
+
+### 1. Access App
+```bash
+https://www.hostlocksd3b.online
+```
+
 ## Made a Change to the Client? Follow this
 
 ### 1. SSH into server
@@ -43,10 +50,4 @@ cd <project-folder>
 cd Client
 npm run build
 sudo cp -r build/* /var/www/html/
-```
-## Just want to access the website? Follow this
-
-### 1. Access App
-```bash
-https://www.hostlocksd3b.online
 ```
