@@ -1,13 +1,19 @@
-from datetime import datetime, timezone
-from flask_sqlalchemy import SQLAlchemy
-from enum import Enum
 from . import db, bcrypt
+from datetime import datetime, timezone
 
-# Enum for User roles
-class UserRole(str, Enum):
+# ==========================================================
+# USER ROLES
+# ==========================================================
+
+class UserRole:
     ADMIN = "admin"
     HOST = "host"
     GUEST = "guest"
+
+
+# ==========================================================
+# ROLE PERMISSIONS
+# ==========================================================
 
 ROLE_PERMISSIONS = {
     UserRole.ADMIN: {"manage_users", "manage_all_bnbs", "view_all_logs", "device_register", "view_self"},
@@ -15,21 +21,26 @@ ROLE_PERMISSIONS = {
     UserRole.GUEST: {"view_self"},
 }
 
-# User Model
+# ==========================================================
+# USERS TABLE
+# ==========================================================
+
 class User(db.Model):
     __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
-    contact_number = db.Column(db.String(32))
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.Enum(UserRole), nullable=False, default=UserRole.GUEST, index=True)
-    is_active = db.Column(db.Boolean, nullable=False, default=True)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
-    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False)
+    contact_number = db.Column(db.String(32))
+    photo_path = db.Column(db.String(500))
     last_login_at = db.Column(db.DateTime)
 
-    bnbs = db.relationship("BnB", back_populates="host", lazy="dynamic")
+    role = db.Column(db.String(32), nullable=False, default=UserRole.GUEST, index=True)
+
+    hosted_bnbs = db.relationship("BnB", back_populates="host", lazy="dynamic")
+    bookings = db.relationship("UserBooking", back_populates="user", lazy="dynamic")
+    access_logs = db.relationship("AccessLog", back_populates="recognized_user", lazy="dynamic")
 
     def set_password(self, password: str) -> None:
         self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
@@ -54,121 +65,138 @@ class User(db.Model):
         return self.role == UserRole.GUEST
 
 
-# BnB Model
+# ==========================================================
+# BNBS TABLE
+# ==========================================================
+
 class BnB(db.Model):
     __tablename__ = "bnbs"
+
     id = db.Column("bnb_id", db.Integer, primary_key=True)
-    unique_code = db.Column("bnb_unique_code", db.String(64), unique=True, nullable=False)
-    name = db.Column("bnb_name", db.String(255), nullable=False)
-    timezone = db.Column("timezone", db.String(64))
-    host_name = db.Column("host_name", db.String(255))
-    host_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True)
-    host = db.relationship("User", back_populates="bnbs")
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
-    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False)
+    unique_code = db.Column(db.String(64), unique=True, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+
+    host_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    host = db.relationship("User", back_populates="hosted_bnbs")
+
     bookings = db.relationship("Booking", back_populates="bnb", lazy="dynamic")
     access_logs = db.relationship("AccessLog", back_populates="bnb", lazy="dynamic")
-
-    def __repr__(self):
-        return f"<BnB {self.name} ({self.unique_code})>"
+    tamper_alerts = db.relationship("TamperAlert", back_populates="bnb", lazy="dynamic")
 
 
-# Booking Model
-class BookingStatus(str, Enum):
-    PENDING = "pending"
-    ACTIVE = "active"
-    COMPLETED = "completed"
-    CANCELLED = "cancelled"
+# ==========================================================
+# BOOKINGS TABLE
+# ==========================================================
 
 class Booking(db.Model):
     __tablename__ = "bookings"
+
     id = db.Column("booking_id", db.Integer, primary_key=True)
-    bnb_id = db.Column("bnb_id", db.Integer, db.ForeignKey("bnbs.bnb_id"), nullable=False, index=True)
+    bnb_id = db.Column(db.Integer, db.ForeignKey("bnbs.bnb_id"), nullable=False)
     bnb = db.relationship("BnB", back_populates="bookings")
-    booking_code = db.Column("booking_code", db.String(64), unique=True, nullable=False)
-    check_in_time = db.Column("check_in_time", db.DateTime, nullable=False)
-    check_out_time = db.Column("check_out_time", db.DateTime, nullable=False)
-    status = db.Column("status", db.Enum(BookingStatus), nullable=False, default=BookingStatus.PENDING)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
-    guests = db.relationship("Guest", back_populates="booking", lazy="dynamic")
 
-    def __repr__(self):
-        return f"<Booking {self.booking_code} ({self.status})>"
+    booking_code = db.Column(db.String(64), unique=True, nullable=False)
+    check_in_time = db.Column(db.DateTime, nullable=False)
+    check_out_time = db.Column(db.DateTime, nullable=False)
 
-
-# Guest Model
-class Guest(db.Model):
-    __tablename__ = "guests"
-    id = db.Column("guest_id", db.Integer, primary_key=True)
-    booking_id = db.Column("booking_id", db.Integer, db.ForeignKey("bookings.booking_id"), nullable=False, index=True)
-    booking = db.relationship("Booking", back_populates="guests")
-    name = db.Column("name", db.String(255), nullable=False)
-    phone_no = db.Column("phone_no", db.String(32))
-    is_primary = db.Column("is_primary", db.Boolean, nullable=False, default=False)
-    credentials = db.relationship("Credential", back_populates="guest", lazy="dynamic")
-    photos = db.relationship("GuestPhoto", back_populates="guest", lazy="dynamic")
-    access_logs = db.relationship("AccessLog", back_populates="guest", lazy="dynamic")
-
-    def __repr__(self):
-        return f"<Guest {self.name}>"
+    user_links = db.relationship("UserBooking", back_populates="booking", lazy="dynamic")
+    fob_links = db.relationship("FobBooking", back_populates="booking", lazy="dynamic")
+    access_logs = db.relationship("AccessLog", back_populates="booking", lazy="dynamic")
 
 
-# GuestPhoto Model
-class GuestPhoto(db.Model):
-    __tablename__ = "guest_photos"
-    id = db.Column("photo_id", db.Integer, primary_key=True)
-    guest_id = db.Column("guest_id", db.Integer, db.ForeignKey("guests.guest_id"), nullable=False, index=True)
-    guest = db.relationship("Guest", back_populates="photos")
-    path = db.Column("path", db.String(500), nullable=False)
-    date_added = db.Column("date_added", db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+# ==========================================================
+# USER <-> BOOKINGS TABLE
+# ==========================================================
 
-    def __repr__(self):
-        return f"<GuestPhoto {self.id}>"
+class UserBooking(db.Model):
+    __tablename__ = "user_bookings"
 
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    booking_id = db.Column(db.Integer, db.ForeignKey("bookings.booking_id"), nullable=False)
+    is_primary_guest = db.Column(db.Boolean, nullable=False, default=False)
 
-# Credential Model
-class CredentialType(str, Enum):
-    NFC = "nfc"
-    FACE = "face"
-    PIN = "pin"
-
-class Credential(db.Model):
-    __tablename__ = "credentials"
-    id = db.Column("credential_id", db.Integer, primary_key=True)
-    guest_id = db.Column("guest_id", db.Integer, db.ForeignKey("guests.guest_id"), nullable=False, index=True)
-    guest = db.relationship("Guest", back_populates="credentials")
-    type = db.Column("type", db.Enum(CredentialType), nullable=False)
-    is_active = db.Column("is_active", db.Boolean, nullable=False, default=True)
-    issued_at = db.Column("issued_at", db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
-    revoked_at = db.Column("revoked_at", db.DateTime)
-
-    def __repr__(self):
-        return f"<Credential {self.type} ({'Active' if self.is_active else 'Inactive'})>"
+    user = db.relationship("User", back_populates="bookings")
+    booking = db.relationship("Booking", back_populates="user_links")
 
 
-# AccessLog Model
-class AuthMethod(str, Enum):
-    NFC = "nfc"
-    FACE = "face"
-    PIN = "pin"
-    OTHER = "other"
+# ==========================================================
+# FOBS TABLE
+# ==========================================================
 
-class AccessResult(str, Enum):
-    SUCCESS = "success"
-    FAILURE = "failure"
+class Fob(db.Model):
+    __tablename__ = "fobs"
+
+    id = db.Column(db.Integer, primary_key=True)
+    uid = db.Column(db.String(64), unique=True, nullable=False)
+    label = db.Column(db.String(128))
+    created_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+
+    bookings = db.relationship("FobBooking", back_populates="fob", lazy="dynamic")
+    access_logs = db.relationship("AccessLog", back_populates="fob", lazy="dynamic")
+
+
+# ==========================================================
+# FOB <-> BOOKINGS TABLE
+# ==========================================================
+
+class FobBooking(db.Model):
+    __tablename__ = "fob_bookings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    fob_id = db.Column(db.Integer, db.ForeignKey("fobs.id"), nullable=False)
+    booking_id = db.Column(db.Integer, db.ForeignKey("bookings.booking_id"), nullable=False)
+
+    active_from = db.Column(db.DateTime, nullable=False)
+    active_until = db.Column(db.DateTime, nullable=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+
+    fob = db.relationship("Fob", back_populates="bookings")
+    booking = db.relationship("Booking", back_populates="fob_links")
+
+
+# ==========================================================
+# ACCESS LOGS TABLE
+# ==========================================================
 
 class AccessLog(db.Model):
     __tablename__ = "access_logs"
-    id = db.Column("log_id", db.Integer, primary_key=True)
-    guest_id = db.Column("guest_id", db.Integer, db.ForeignKey("guests.guest_id"), nullable=True, index=True)
-    guest = db.relationship("Guest", back_populates="access_logs")
-    bnb_id = db.Column("bnb_id", db.Integer, db.ForeignKey("bnbs.bnb_id"), nullable=False, index=True)
-    bnb = db.relationship("BnB", back_populates="access_logs")
-    time_logged = db.Column("time_logged", db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
-    auth_method = db.Column("auth_method", db.Enum(AuthMethod), nullable=False)
-    result = db.Column("result", db.Enum(AccessResult), nullable=False)
-    reason = db.Column("reason", db.String(255))
-    snapshot = db.Column("snapshot", db.String(500))
 
-    def __repr__(self):
-        return f"<AccessLog {self.id} - {self.result}>"
+    id = db.Column("log_id", db.Integer, primary_key=True)
+
+    bnb_id = db.Column(db.Integer, db.ForeignKey("bnbs.bnb_id"), nullable=False)
+    bnb = db.relationship("BnB", back_populates="access_logs")
+
+    fob_id = db.Column(db.Integer, db.ForeignKey("fobs.id"))
+    fob = db.relationship("Fob", back_populates="access_logs")
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    recognized_user = db.relationship("User", back_populates="access_logs")
+
+    booking_id = db.Column(db.Integer, db.ForeignKey("bookings.booking_id"))
+    booking = db.relationship("Booking", back_populates="access_logs")
+
+    time_logged = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+
+    match_result = db.Column(db.String(32), nullable=False)
+    face_confidence = db.Column(db.Float)
+    snapshot_path = db.Column(db.String(500))
+    event_type = db.Column(db.String(32))
+
+
+# ==========================================================
+# TAMPER ALERTS TABLE
+# ==========================================================
+
+class TamperAlert(db.Model):
+    __tablename__ = "tamper_alerts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    bnb_id = db.Column(db.Integer, db.ForeignKey("bnbs.bnb_id"), nullable=False)
+    bnb = db.relationship("BnB", back_populates="tamper_alerts")
+
+    triggered_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))

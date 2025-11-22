@@ -1,5 +1,16 @@
 from flask import Blueprint, request, jsonify
-from .models import db, User, BnB, Booking, Guest, GuestPhoto, Credential, AccessLog, UserRole
+from .models import (
+    db,
+    User,
+    BnB,
+    Booking,
+    UserBooking,
+    Fob,
+    FobBooking,
+    AccessLog,
+    TamperAlert,
+    UserRole,
+)
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import datetime
 import re
@@ -11,6 +22,7 @@ VALID_ROLES = ["guest", "host", "admin"]
 
 auth_bp = Blueprint("auth", __name__)
 
+
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
@@ -18,12 +30,18 @@ def me():
     user = User.query.get(identity["id"])
     if not user:
         return jsonify({"message": "User not found"}), 404
-    return jsonify({
-        "user_id": user.id,
-        "name": user.name,
-        "email": user.email,
-        "role": user.role.value
-    }), 200
+    return (
+        jsonify(
+            {
+                "user_id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role,
+            }
+        ),
+        200,
+    )
+
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
@@ -34,6 +52,7 @@ def register():
     contact_number = data.get("contact_number")
     role = data.get("role", "guest").lower()
 
+    # Normalise old "user" role to "guest"
     if role == "user":
         role = "guest"
 
@@ -48,29 +67,33 @@ def register():
     if User.query.filter_by(email=email).first():
         return jsonify({"message": "Email already registered"}), 400
 
-    try:
-        user_role = UserRole(role)
-    except ValueError:
-        return jsonify({"message": "Invalid role"}), 400
-
-    user = User(name=name, email=email, contact_number=contact_number, role=user_role)
+    # Role string has already been validated against VALID_ROLES,
+    # so we can safely store it directly on the User model.
+    user = User(name=name, email=email, contact_number=contact_number, role=role)
     user.set_password(password)
 
     try:
         db.session.add(user)
         db.session.commit()
-        access_token = create_access_token(identity={"id": user.id, "role": user.role.value})
-        return jsonify({
-            "message": f"{role.capitalize()} registered successfully",
-            "access_token": access_token,
-            "user_id": user.id,
-            "name": user.name,
-            "email": user.email,
-            "role": user.role.value
-        }), 201
+        access_token = create_access_token(identity={"id": user.id, "role": user.role})
+
+        return (
+            jsonify(
+                {
+                    "message": f"{role.capitalize()} registered successfully",
+                    "access_token": access_token,
+                    "user_id": user.id,
+                    "name": user.name,
+                    "email": user.email,
+                    "role": user.role,
+                }
+            ),
+            201,
+        )
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error registering user", "error": str(e)}), 500
+
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
@@ -87,12 +110,18 @@ def login():
     user.last_login_at = datetime.utcnow()
     db.session.commit()
 
-    access_token = create_access_token(identity={"id": user.id, "role": user.role.value})
-    return jsonify({
-        "message": "Login successful",
-        "access_token": access_token,
-        "user_id": user.id,
-        "name": user.name,
-        "email": user.email,
-        "role": user.role.value
-    }), 200
+    access_token = create_access_token(identity={"id": user.id, "role": user.role})
+
+    return (
+        jsonify(
+            {
+                "message": "Login successful",
+                "access_token": access_token,
+                "user_id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role,
+            }
+        ),
+        200,
+    )

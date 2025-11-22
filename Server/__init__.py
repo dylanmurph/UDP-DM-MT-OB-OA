@@ -42,7 +42,18 @@ def create_app():
     jwt.init_app(app)
 
     # Import models after initializing the database
-    from .models import User, BnB, Booking, Guest, GuestPhoto, Credential, AccessLog
+    from .models import (
+    User,
+    BnB,
+    Booking,
+    UserBooking,
+    Fob,
+    FobBooking,
+    AccessLog,
+    TamperAlert,
+)
+
+
 
     # Create all tables in the database if they don't already exist
     with app.app_context():
@@ -62,11 +73,34 @@ def create_app():
                 f"Error creating tables: {e}"
             )  # Print any error if table creation fails
 
-    # Register the authentication blueprint (for login, registration, etc.)
+    # ------------------------------------------------------------
+    # REGISTER EXISTING BLUEPRINTS
+    # ------------------------------------------------------------
+
     from .auth import auth_bp
     from .dbroute import db_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(db_bp)
+
+    # ------------------------------------------------------------
+    # REGISTER NEW API BLUEPRINTS (ADDED CLEANLY BELOW)
+    # ------------------------------------------------------------
+
+    from .bnb_routes import bnb_bp
+    from .booking_routes import booking_bp
+    from .fob_routes import fob_bp
+    from .access_routes import access_bp
+    from .tamper_routes import tamper_bp
+    from .hardware_routes import hardware_bp
+
+    app.register_blueprint(bnb_bp)
+    app.register_blueprint(booking_bp)
+    app.register_blueprint(fob_bp)
+    app.register_blueprint(access_bp)
+    app.register_blueprint(tamper_bp)
+    app.register_blueprint(hardware_bp)
+
+    # ------------------------------------------------------------
 
     return app  # Return the app instance
