@@ -201,7 +201,7 @@ function App() {
           />
 
           {/* ======================= HOST ======================= */}
-          <Route
+          {/* <Route
             path="/host/home"
             element={
               <RequireRole user={user} role="host">
@@ -240,7 +240,21 @@ function App() {
                 <HostSettings onLogout={handleLogout} />
               </RequireRole>
             }
-          />
+          /> */}
+          <Route
+            element={
+              <RequireRole user={user} role="host">
+                <HostLayout />
+              </RequireRole>
+            }
+          >
+            <Route path="/host/home" element={<HostHome user={user} />} />
+            <Route path="/host/guests" element={<HostGuests user={user} />} />
+            <Route path="/host/logs" element={<HostLogs user={user} />} />
+            <Route path="/host/alerts" element={<HostAlerts user={user} />} />
+            <Route path="/host/settings" element={<HostSettings onLogout={handleLogout} />} />
+          </Route>
+
 
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />

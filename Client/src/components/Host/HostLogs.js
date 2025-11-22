@@ -1,20 +1,11 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
 import {
   Download,
   Filter,
-  Home,
-  Users,
-  ListChecks,
-  Bell,
-  Settings,
 } from "lucide-react";
 import { accessLogs } from "../../mockData";
 
 export function HostLogs() {
-  const location = useLocation();
-  const isActive = (path) => location.pathname === path;
-
   const successCount = accessLogs.filter((l) => l.status === "Success").length;
   const failedCount = accessLogs.filter((l) => l.status === "Failed").length;
 
@@ -187,54 +178,9 @@ export function HostLogs() {
       </main>
 
       {/* BOTTOM NAV */}
-      <nav className="sticky bottom-0 inset-x-0 bg-white border-t shadow-sm">
-        <div className="max-w-md mx-auto flex justify-between px-6 py-2 text-xs">
-          <NavItem
-            to="/host/home"
-            label="Home"
-            icon={Home}
-            active={isActive("/host/home")}
-          />
-          <NavItem
-            to="/host/guests"
-            label="Guests"
-            icon={Users}
-            active={isActive("/host/guests")}
-          />
-          <NavItem
-            to="/host/logs"
-            label="Logs"
-            icon={ListChecks}
-            active={isActive("/host/logs")}
-          />
-          <NavItem
-            to="/host/alerts"
-            label="Alerts"
-            icon={Bell}
-            active={isActive("/host/alerts")}
-          />
-          <NavItem
-            to="/host/settings"
-            label="Settings"
-            icon={Settings}
-            active={isActive("/host/settings")}
-          />
-        </div>
-      </nav>
+      <HostNav />
     </div>
   );
 }
-
-const NavItem = ({ to, label, icon: Icon, active }) => (
-  <Link
-    to={to}
-    className={`flex flex-col items-center gap-1 ${
-      active ? "text-sky-600" : "text-slate-500"
-    }`}
-  >
-    <Icon className="w-5 h-5" />
-    <span>{label}</span>
-  </Link>
-);
 
 export default HostLogs;
