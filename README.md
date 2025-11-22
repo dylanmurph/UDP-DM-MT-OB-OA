@@ -7,19 +7,16 @@
 
 ## Context
 
-This product is designed to be used at the main staff entrance of a medium sized office building. Employees must use this system daily to securely enter this building. It gives confidence to all staff about the security of the building by preventing unauthorised access.
+This product is designed to be used at the entrance of an Airbnb property. Guests are going to use this system during their stay to securely access the property. This gives confidence to both the guest and the host that the property is secure and prevents unauthorised access.
 
 ## Description
 
-The main goal of this project is to grant entry into a building securely using an RFID/NFC reader with a second layer of protection via facial recognition.
-
-The system first verifies that the ID of the keyfob/NFC code corresponds with information stored in a user database and validates the user on the system. It then uses a camera with facial recognition to confirm the person at the door matches the employee photo stored in the database.
-
-If the user matches the system, it will release a door lock and grant entry into the building, logging when the person has entered and storing the information in the database.
-
-If the keyfob ID is incorrect, facial recognition fails, or the system cannot read the user's face, the system will respond with an audible alert notifying the user that entry failed and this event will be logged in the database. An audible alert can also be sent inside the building to a receptionist or security officer.
-
-The system is capable of logging all entrants and maintaining a record of employees currently in the building.
+The main goal of this project is to grant entry into an Airbnb securely using an NFC reader with a second layer of protection via facial recognition.
+Guests will register through a companion mobile app before arrival. After booking, the guest downloads the app, registers their details, and uploads a photo. They then enter a unique booking code linked to their stay, which automatically syncs their information to the database. The app will display their booking details, check-in and check-out times, and provide the ability use NFC as their entrance method.
+If the user matches the system, then it will release a door lock and grant entry into the Airbnb, logging when the person has entered the building and storing the information to the database.
+If the keyfob ID is incorrect there will be a response from the system with an audible and visable alert notifying the user that entry failed. If the facial recogition fails or the product is tampered with an alert will be logged into the database, along with an alert to the host or property manager.
+The system will be capable of logging all access events at the property and storing a log, along with a record of guests currently staying at the property.
+ 
 
 ## Prerequisites
 
