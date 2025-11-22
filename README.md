@@ -29,28 +29,24 @@ The system is capable of logging all entrants and maintaining a record of employ
 
 # Project Setup
 
-## 1. SSH into server
+## Made a Change to the Client? Follow this
+
+### 1. SSH into server
 ```bash
 ssh -i /path/to/your-key.pem ubuntu@<PUBLIC_IP>
 git clone <repo-url>
 cd <project-folder>
 ```
 
-## 2. Build React frontend 
+### 2. Build React frontend 
 ```bash
 cd Client
 npm run build
 sudo cp -r build/* /var/www/html/
 ```
+## Just want to access the website? Follow this
 
-## 3. Run Backend 
-```bash
-cd ..
-source venv/bin/activate
-python -m Server.run
-```
-
-## 4. Access App
+### 1. Access App
 ```bash
 https://www.hostlocksd3b.online
 ```
