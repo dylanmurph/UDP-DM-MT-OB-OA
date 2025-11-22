@@ -86,8 +86,13 @@ function App() {
     <Router>
       <div className="max-w-md mx-auto p-4">
         <Routes>
-          {/* Public landing */}
-          <Route path="/" element={<Landing />} />
+          {/* Landing */}
+          <Route
+            path="/"
+            element={
+              !user ? <Landing /> : <Navigate to={getHomePath(user)} replace />
+            }
+          />
 
           {/* Register */}
           <Route
