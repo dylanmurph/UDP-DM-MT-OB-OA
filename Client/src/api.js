@@ -5,10 +5,12 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token && token.length > 20) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const userStr = localStorage.getItem("user");
+  if (userStr) {
+    const user = JSON.parse(userStr);
+    if (user.token && user.token.length > 20) {
+      config.headers.Authorization = `Bearer ${user.token}`;
+    }
   } else {
     delete config.headers.Authorization;
   }
