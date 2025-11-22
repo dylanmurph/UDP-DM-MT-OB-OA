@@ -98,6 +98,9 @@ class Booking(db.Model):
     booking_code = db.Column(db.String(64), unique=True, nullable=False)
     check_in_time = db.Column(db.DateTime, nullable=False)
     check_out_time = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True),nullable=False,default=lambda: datetime.now(timezone.utc)
+)
+
 
     user_links = db.relationship("UserBooking", back_populates="booking", lazy="dynamic")
     fob_links = db.relationship("FobBooking", back_populates="booking", lazy="dynamic")
